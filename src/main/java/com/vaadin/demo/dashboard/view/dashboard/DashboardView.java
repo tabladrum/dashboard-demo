@@ -6,9 +6,9 @@ import java.util.Iterator;
 import com.google.common.eventbus.Subscribe;
 import com.vaadin.demo.dashboard.DashboardUI;
 import com.vaadin.demo.dashboard.component.SparklineChart;
-import com.vaadin.demo.dashboard.component.TopGrossingMoviesChart;
-import com.vaadin.demo.dashboard.component.TopSixTheatersChart;
-import com.vaadin.demo.dashboard.component.TopTenMoviesTable;
+import com.vaadin.demo.dashboard.component.LiveLessons;
+import com.vaadin.demo.dashboard.component.Practice;
+import com.vaadin.demo.dashboard.component.Listening;
 import com.vaadin.demo.dashboard.data.dummy.DummyDataGenerator;
 import com.vaadin.demo.dashboard.domain.DashboardNotification;
 import com.vaadin.demo.dashboard.event.DashboardEvent.CloseOpenWindowsEvent;
@@ -67,7 +67,7 @@ public final class DashboardView extends Panel implements View,
 
         root.addComponent(buildHeader());
 
-        root.addComponent(buildSparklines());
+//        root.addComponent(buildSparklines());
 
         Component content = buildContent();
         root.addComponent(content);
@@ -113,7 +113,7 @@ public final class DashboardView extends Panel implements View,
         header.addStyleName("viewheader");
         header.setSpacing(true);
 
-        titleLabel = new Label("Dashboard");
+        titleLabel = new Label("Main");
         titleLabel.setId(TITLE_ID);
         titleLabel.setSizeUndefined();
         titleLabel.addStyleName(ValoTheme.LABEL_H1);
@@ -173,13 +173,13 @@ public final class DashboardView extends Panel implements View,
     }
 
     private Component buildTopGrossingMovies() {
-        TopGrossingMoviesChart topGrossingMoviesChart = new TopGrossingMoviesChart();
+        LiveLessons topGrossingMoviesChart = new LiveLessons();
         topGrossingMoviesChart.setSizeFull();
         return createContentWrapper(topGrossingMoviesChart);
     }
 
     private Component buildNotes() {
-        TextArea notes = new TextArea("Notes");
+        TextArea notes = new TextArea("Portfolio");
         notes.setValue("Remember to:\n· Zoom in and out in the Sales view\n· Filter the transactions and drag a set of them to the Reports tab\n· Create a new report\n· Change the schedule of the movie theater");
         notes.setSizeFull();
         notes.addStyleName(ValoTheme.TEXTAREA_BORDERLESS);
@@ -189,13 +189,13 @@ public final class DashboardView extends Panel implements View,
     }
 
     private Component buildTop10TitlesByRevenue() {
-        Component contentWrapper = createContentWrapper(new TopTenMoviesTable());
+        Component contentWrapper = createContentWrapper(new Listening());
         contentWrapper.addStyleName("top10-revenue");
         return contentWrapper;
     }
 
     private Component buildPopularMovies() {
-        return createContentWrapper(new TopSixTheatersChart());
+        return createContentWrapper(new Practice());
     }
 
     private Component createContentWrapper(final Component content) {

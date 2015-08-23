@@ -14,7 +14,7 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
-public final class TopTenMoviesTable extends Table {
+public final class Listening extends Table {
 
     @Override
     protected String formatPropertyValue(final Object rowId,
@@ -32,8 +32,8 @@ public final class TopTenMoviesTable extends Table {
         return result;
     }
 
-    public TopTenMoviesTable() {
-        setCaption("Top 10 Titles by Revenue");
+    public Listening() {
+        setCaption("Listening");
 
         addStyleName(ValoTheme.TABLE_BORDERLESS);
         addStyleName(ValoTheme.TABLE_NO_STRIPES);

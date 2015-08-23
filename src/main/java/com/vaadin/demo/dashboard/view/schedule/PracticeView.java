@@ -45,12 +45,12 @@ import com.vaadin.ui.components.calendar.handler.BasicEventResizeHandler;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
-public final class ScheduleView extends CssLayout implements View {
+public final class PracticeView extends CssLayout implements View {
 
     private Calendar calendar;
     private final Component tray;
 
-    public ScheduleView() {
+    public PracticeView() {
         setSizeFull();
         addStyleName("schedule");
         DashboardEventBus.register(this);
@@ -102,7 +102,7 @@ public final class ScheduleView extends CssLayout implements View {
 
     private Component buildCalendarView() {
         VerticalLayout calendarLayout = new VerticalLayout();
-        calendarLayout.setCaption("Calendar");
+        calendarLayout.setCaption("History");
         calendarLayout.setMargin(true);
 
         calendar = new Calendar(new MovieEventProvider());
@@ -168,7 +168,7 @@ public final class ScheduleView extends CssLayout implements View {
 
     private Component buildCatalogView() {
         CssLayout catalog = new CssLayout();
-        catalog.setCaption("Catalog");
+        catalog.setCaption("Practice");
         catalog.addStyleName("catalog");
 
         for (final Movie movie : DashboardUI.getDataProvider().getMovies()) {

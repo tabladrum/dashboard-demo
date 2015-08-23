@@ -35,12 +35,12 @@ import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
-public final class ReportsView extends TabSheet implements View, CloseHandler,
+public final class ListeningView extends TabSheet implements View, CloseHandler,
         ReportEditorListener {
 
     public static final String CONFIRM_DIALOG_ID = "confirm-dialog";
 
-    public ReportsView() {
+    public ListeningView() {
         setSizeFull();
         addStyleName("reports");
         addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
@@ -53,7 +53,7 @@ public final class ReportsView extends TabSheet implements View, CloseHandler,
     private Component buildDrafts() {
         final VerticalLayout allDrafts = new VerticalLayout();
         allDrafts.setSizeFull();
-        allDrafts.setCaption("All Drafts");
+        allDrafts.setCaption("Listening");
 
         VerticalLayout titleAndDrafts = new VerticalLayout();
         titleAndDrafts.setSizeUndefined();

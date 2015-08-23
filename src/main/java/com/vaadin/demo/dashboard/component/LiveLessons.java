@@ -14,10 +14,10 @@ import com.vaadin.demo.dashboard.data.dummy.DummyDataGenerator;
 import com.vaadin.demo.dashboard.domain.Movie;
 
 @SuppressWarnings("serial")
-public class TopGrossingMoviesChart extends Chart {
+public class LiveLessons extends Chart {
 
-    public TopGrossingMoviesChart() {
-        setCaption("Top Grossing Movies");
+    public LiveLessons() {
+        setCaption("Live Lessons");
         getConfiguration().setTitle("");
         getConfiguration().getChart().setType(ChartType.BAR);
         getConfiguration().getChart().setAnimation(false);

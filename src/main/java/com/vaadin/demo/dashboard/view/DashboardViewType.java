@@ -1,20 +1,20 @@
 package com.vaadin.demo.dashboard.view;
 
 import com.vaadin.demo.dashboard.view.dashboard.DashboardView;
-import com.vaadin.demo.dashboard.view.reports.ReportsView;
-import com.vaadin.demo.dashboard.view.sales.SalesView;
-import com.vaadin.demo.dashboard.view.schedule.ScheduleView;
-import com.vaadin.demo.dashboard.view.transactions.TransactionsView;
+import com.vaadin.demo.dashboard.view.reports.ListeningView;
+import com.vaadin.demo.dashboard.view.sales.LiveLessonView;
+import com.vaadin.demo.dashboard.view.schedule.PracticeView;
+import com.vaadin.demo.dashboard.view.transactions.PortfolioView;
 import com.vaadin.navigator.View;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;
 
 public enum DashboardViewType {
-    DASHBOARD("dashboard", DashboardView.class, FontAwesome.HOME, true), SALES(
-            "sales", SalesView.class, FontAwesome.BAR_CHART_O, false), TRANSACTIONS(
-            "transactions", TransactionsView.class, FontAwesome.TABLE, false), REPORTS(
-            "reports", ReportsView.class, FontAwesome.FILE_TEXT_O, true), SCHEDULE(
-            "schedule", ScheduleView.class, FontAwesome.CALENDAR_O, false);
+    DASHBOARD("main", DashboardView.class, FontAwesome.HOME, true), SALES(
+            "live lessons", LiveLessonView.class, FontAwesome.BAR_CHART_O, false), TRANSACTIONS(
+            "portfolio", PortfolioView.class, FontAwesome.TABLE, false), REPORTS(
+            "listening", ListeningView.class, FontAwesome.FILE_TEXT_O, true), SCHEDULE(
+            "practice", PracticeView.class, FontAwesome.CALENDAR_O, false);
 
     private final String viewName;
     private final Class<? extends View> viewClass;

@@ -7,8 +7,8 @@ import java.util.Iterator;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.demo.dashboard.component.InlineTextEditor;
-import com.vaadin.demo.dashboard.component.TopSixTheatersChart;
-import com.vaadin.demo.dashboard.component.TopTenMoviesTable;
+import com.vaadin.demo.dashboard.component.Practice;
+import com.vaadin.demo.dashboard.component.Listening;
 import com.vaadin.demo.dashboard.component.TransactionsListing;
 import com.vaadin.demo.dashboard.domain.Transaction;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
@@ -184,9 +184,9 @@ public final class ReportEditor extends VerticalLayout {
                         prefillData != null ? String.valueOf(prefillData)
                                 : null);
             } else if (type == PaletteItemType.TABLE) {
-                result = new TopTenMoviesTable();
+                result = new Listening();
             } else if (type == PaletteItemType.CHART) {
-                result = new TopSixTheatersChart();
+                result = new Practice();
             } else if (type == PaletteItemType.TRANSACTIONS) {
                 result = new TransactionsListing(
                         (Collection<Transaction>) prefillData);

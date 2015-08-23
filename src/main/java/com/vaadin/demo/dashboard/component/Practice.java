@@ -14,12 +14,12 @@ import com.vaadin.demo.dashboard.data.dummy.DummyDataGenerator;
 import com.vaadin.demo.dashboard.domain.Movie;
 
 @SuppressWarnings("serial")
-public class TopSixTheatersChart extends Chart {
+public class Practice extends Chart {
 
-    public TopSixTheatersChart() {
+    public Practice() {
         super(ChartType.PIE);
 
-        setCaption("Popular Movies");
+        setCaption("Practice");
         getConfiguration().setTitle("");
         getConfiguration().getChart().setType(ChartType.PIE);
         getConfiguration().getChart().setAnimation(false);

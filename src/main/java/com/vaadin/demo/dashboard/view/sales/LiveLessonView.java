@@ -35,7 +35,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
-public class SalesView extends VerticalLayout implements View {
+public class LiveLessonView extends VerticalLayout implements View {
 
     private final Timeline timeline;
     private ComboBox movieSelect;
@@ -50,7 +50,7 @@ public class SalesView extends VerticalLayout implements View {
             new SolidColor(83, 220, 164, 0.3) };
     private int colorIndex = -1;
 
-    public SalesView() {
+    public LiveLessonView() {
         setSizeFull();
         addStyleName("sales");
 
@@ -87,7 +87,7 @@ public class SalesView extends VerticalLayout implements View {
         header.setSpacing(true);
         Responsive.makeResponsive(header);
 
-        Label titleLabel = new Label("Revenue by Movie");
+        Label titleLabel = new Label("Live Lesson");
         titleLabel.setSizeUndefined();
         titleLabel.addStyleName(ValoTheme.LABEL_H1);
         titleLabel.addStyleName(ValoTheme.LABEL_NO_MARGIN);

@@ -52,7 +52,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings({ "serial", "unchecked" })
-public final class TransactionsView extends VerticalLayout implements View {
+public final class PortfolioView extends VerticalLayout implements View {
 
     private final Table table;
     private Button createReport;
@@ -62,7 +62,7 @@ public final class TransactionsView extends VerticalLayout implements View {
     private static final String[] DEFAULT_COLLAPSIBLE = { "country", "city",
             "theater", "room", "title", "seats" };
 
-    public TransactionsView() {
+    public PortfolioView() {
         setSizeFull();
         addStyleName("transactions");
         DashboardEventBus.register(this);
@@ -88,7 +88,7 @@ public final class TransactionsView extends VerticalLayout implements View {
         header.setSpacing(true);
         Responsive.makeResponsive(header);
 
-        Label title = new Label("Latest Transactions");
+        Label title = new Label("Portfolio");
         title.setSizeUndefined();
         title.addStyleName(ValoTheme.LABEL_H1);
         title.addStyleName(ValoTheme.LABEL_NO_MARGIN);
