@@ -1,4 +1,4 @@
-package com.vaadin.demo.dashboard.view.reports;
+package com.vaadin.demo.dashboard.view.listening;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -8,8 +8,8 @@ import com.google.common.eventbus.Subscribe;
 import com.vaadin.demo.dashboard.event.DashboardEvent.ReportsCountUpdatedEvent;
 import com.vaadin.demo.dashboard.event.DashboardEvent.TransactionReportEvent;
 import com.vaadin.demo.dashboard.event.DashboardEventBus;
-import com.vaadin.demo.dashboard.view.reports.ReportEditor.PaletteItemType;
-import com.vaadin.demo.dashboard.view.reports.ReportEditor.ReportEditorListener;
+import com.vaadin.demo.dashboard.view.listening.ReportEditor.PaletteItemType;
+import com.vaadin.demo.dashboard.view.listening.ReportEditor.ReportEditorListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;

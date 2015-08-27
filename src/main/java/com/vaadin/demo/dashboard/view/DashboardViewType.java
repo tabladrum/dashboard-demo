@@ -1,10 +1,10 @@
 package com.vaadin.demo.dashboard.view;
 
 import com.vaadin.demo.dashboard.view.dashboard.DashboardView;
-import com.vaadin.demo.dashboard.view.reports.ListeningView;
-import com.vaadin.demo.dashboard.view.sales.LiveLessonView;
-import com.vaadin.demo.dashboard.view.schedule.PracticeView;
-import com.vaadin.demo.dashboard.view.transactions.PortfolioView;
+import com.vaadin.demo.dashboard.view.listening.ListeningView;
+import com.vaadin.demo.dashboard.view.livesesson.LiveLessonView;
+import com.vaadin.demo.dashboard.view.portfolio.PortfolioView;
+import com.vaadin.demo.dashboard.view.practice.PracticeView;
 import com.vaadin.navigator.View;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Resource;

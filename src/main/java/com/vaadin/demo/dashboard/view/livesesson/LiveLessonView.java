@@ -1,4 +1,4 @@
-package com.vaadin.demo.dashboard.view.sales;
+package com.vaadin.demo.dashboard.view.livesesson;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,6 +23,7 @@ import com.vaadin.event.ShortcutListener;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Responsive;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
@@ -50,6 +51,24 @@ public class LiveLessonView extends VerticalLayout implements View {
             new SolidColor(83, 220, 164, 0.3) };
     private int colorIndex = -1;
 
+    private String HTML = /**"<!DOCTYPE html> \n" +*/
+    		"<html lang=\"en\"> \n" +
+    		"<head> \n" + 
+    		"<meta charset=\"utf-8\" \n> " +
+    		"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> \n" +
+    		"<meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"> \n" +
+    		"<script type=\"text/javascript\" src=\"http://www.skypeassets.com/i/scom/js/skype-uri.js\"></script> \n" +
+    		"<div id=\"SkypeButton_Call_TapabrataPal_1\"> \n" +
+    		 " <script type=\"text/javascript\"> \n" +
+    		    "Skype.ui({ \n" +
+    		      "\"name\": \"dropdown\", \n" +
+    		      "\"element\": \"SkypeButton_Call_TapabrataPal_1\", \n" +
+    		      "\"participants\": [\"TapabrataPal\"], \n" +
+    		      "\"imageSize\": 32 \n" +
+    		    "}); \n" +
+    		  "</script> \n" +
+    		"</div> \n" +
+    		"</html>";
     public LiveLessonView() {
         setSizeFull();
         addStyleName("sales");
@@ -86,6 +105,7 @@ public class LiveLessonView extends VerticalLayout implements View {
         header.addStyleName("viewheader");
         header.setSpacing(true);
         Responsive.makeResponsive(header);
+
 
         Label titleLabel = new Label("Live Lesson");
         titleLabel.setSizeUndefined();

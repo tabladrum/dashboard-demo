@@ -1,4 +1,4 @@
-package com.vaadin.demo.dashboard.view.reports;
+package com.vaadin.demo.dashboard.view.listening;
 
 import java.text.SimpleDateFormat;
 import java.util.Collection;

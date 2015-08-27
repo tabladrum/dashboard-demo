@@ -1,4 +1,4 @@
-package com.vaadin.demo.dashboard.view.transactions;
+package com.vaadin.demo.dashboard.view.portfolio;
 
 import java.text.DateFormat;
 import java.text.DecimalFormat;

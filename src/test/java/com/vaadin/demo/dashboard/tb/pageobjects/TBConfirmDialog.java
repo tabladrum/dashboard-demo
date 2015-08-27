@@ -2,7 +2,7 @@ package com.vaadin.demo.dashboard.tb.pageobjects;
 
 import org.openqa.selenium.WebDriver;
 
-import com.vaadin.demo.dashboard.view.reports.ListeningView;
+import com.vaadin.demo.dashboard.view.listening.ListeningView;
 import com.vaadin.testbench.TestBenchTestCase;
 import com.vaadin.testbench.elements.ButtonElement;
 import com.vaadin.testbench.elements.WindowElement;
