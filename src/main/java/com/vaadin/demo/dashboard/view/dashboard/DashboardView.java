@@ -225,11 +225,11 @@ public final class DashboardView extends Panel implements View,
             public void menuSelected(final MenuItem selectedItem) {
                 if (!slot.getStyleName().contains("max")) {
                     selectedItem.setIcon(FontAwesome.COMPRESS);
-                    toggleMaximized(slot, true);
+//                    toggleMaximized(slot, true);
                 } else {
                     slot.removeStyleName("max");
                     selectedItem.setIcon(FontAwesome.EXPAND);
-                    toggleMaximized(slot, false);
+//                    toggleMaximized(slot, false);
                 }
             }
         });

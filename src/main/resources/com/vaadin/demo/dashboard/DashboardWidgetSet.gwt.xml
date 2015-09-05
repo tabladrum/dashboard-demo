@@ -9,6 +9,7 @@
 
 	<set-configuration-property name="devModeRedirectEnabled"
 		value="true" />
+		
 
 	<!-- Uncomment the following to compile the widgetset for one browser only. 
 		This can reduce the GWT compilation time significantly when debugging. The 
@@ -30,5 +31,5 @@
 
     <inherits name="com.vaadin.addon.timeline.gwt.TimelineWidgetSet" />
 
-    
+
 </module>

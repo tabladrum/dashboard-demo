@@ -2,7 +2,6 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.vaadin.demo</groupId>
-	<artifactId>quicktickets-dashboard</artifactId>
 	<version>1.0.3-SNAPSHOT</version>
 	<packaging>war</packaging>
 
@@ -114,6 +113,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>mediaelementjs-player</artifactId>
+			<version>1.2.7</version>
+		</dependency>
+
+		<dependency>
 			<groupId>com.vaadin</groupId>
 			<artifactId>vaadin-server</artifactId>
 			<version>${vaadin.version}</version>
@@ -205,9 +210,9 @@
 						</configuration>
 						<goals>
 							<goal>resources</goal>
-              <goal>update-theme</goal>
+							<goal>update-theme</goal>
 							<goal>update-widgetset</goal>
-              <goal>compile-theme</goal>
+							<goal>compile-theme</goal>
 							<goal>compile</goal>
 						</goals>
 					</execution>
@@ -273,4 +278,5 @@
 		</pluginManagement>
 	</build>
 
+	<artifactId>musicompanion</artifactId>
 </project>

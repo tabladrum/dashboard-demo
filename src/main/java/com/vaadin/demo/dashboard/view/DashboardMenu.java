@@ -14,6 +14,7 @@ import com.vaadin.demo.dashboard.event.DashboardEvent.ReportsCountUpdatedEvent;
 import com.vaadin.demo.dashboard.event.DashboardEvent.TransactionReportEvent;
 import com.vaadin.demo.dashboard.event.DashboardEvent.UserLoggedOutEvent;
 import com.vaadin.demo.dashboard.event.DashboardEventBus;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.dd.DragAndDropEvent;
 import com.vaadin.event.dd.DropHandler;
 import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
@@ -37,7 +38,9 @@ import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.Command;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
 /**
@@ -69,16 +72,18 @@ public final class DashboardMenu extends CustomComponent {
 
     private Component buildContent() {
         final CssLayout menuContent = new CssLayout();
+//        final VerticalLayout menuContent = new VerticalLayout();
         menuContent.addStyleName("sidebar");
         menuContent.addStyleName(ValoTheme.MENU_PART);
         menuContent.addStyleName("no-vertical-drag-hints");
         menuContent.addStyleName("no-horizontal-drag-hints");
         menuContent.setWidth(null);
         menuContent.setHeight("100%");
+        menuContent.addComponent(buildToggleButton());
 
         menuContent.addComponent(buildTitle());
         menuContent.addComponent(buildUserMenu());
-        menuContent.addComponent(buildToggleButton());
+       
         menuContent.addComponent(buildMenuItems());
 
         return menuContent;
@@ -129,31 +134,37 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     private Component buildToggleButton() {
-        Button valoMenuToggleButton = new Button("Menu", new ClickListener() {
+        Button valoMenuToggleButton = new Button("Topo", new ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
                 if (getCompositionRoot().getStyleName().contains(STYLE_VISIBLE)) {
+                	System.out.println("Clicked - 1");
+                	getCompositionRoot().setVisible(false);
                     getCompositionRoot().removeStyleName(STYLE_VISIBLE);
                 } else {
+                	System.out.println("Clicked - 2");
+                	getCompositionRoot().setVisible(true);
                     getCompositionRoot().addStyleName(STYLE_VISIBLE);
                 }
             }
         });
+        System.out.println("Button: " + valoMenuToggleButton.getHeight());
         valoMenuToggleButton.setIcon(FontAwesome.LIST);
+        valoMenuToggleButton.setHeightUndefined();
+//        valoMenuToggleButton.setVisible(true);
         valoMenuToggleButton.addStyleName("valo-menu-toggle");
         valoMenuToggleButton.addStyleName(ValoTheme.BUTTON_BORDERLESS);
-        valoMenuToggleButton.addStyleName(ValoTheme.BUTTON_SMALL);
+        valoMenuToggleButton.addStyleName(ValoTheme.BUTTON_DANGER);
+        valoMenuToggleButton.addStyleName(STYLE_VISIBLE);
         return valoMenuToggleButton;
     }
 
     private Component buildMenuItems() {
         CssLayout menuItemsLayout = new CssLayout();
         menuItemsLayout.addStyleName("valo-menuitems");
-
         for (final DashboardViewType view : DashboardViewType.values()) {
             Component menuItemComponent = new ValoMenuItemButton(view);
-
-            if (view == DashboardViewType.REPORTS) {
+            if (view == DashboardViewType.LISTENING) {
                 // Add drop target to reports button
                 DragAndDropWrapper reports = new DragAndDropWrapper(
                         menuItemComponent);
@@ -166,7 +177,7 @@ public final class DashboardMenu extends CustomComponent {
                         UI.getCurrent()
                                 .getNavigator()
                                 .navigateTo(
-                                        DashboardViewType.REPORTS.getViewName());
+                                        DashboardViewType.LISTENING.getViewName());
                         Table table = (Table) event.getTransferable()
                                 .getSourceComponent();
                         DashboardEventBus.post(new TransactionReportEvent(
@@ -188,7 +199,7 @@ public final class DashboardMenu extends CustomComponent {
                 menuItemComponent = buildBadgeWrapper(menuItemComponent,
                         notificationsBadge);
             }
-            if (view == DashboardViewType.REPORTS) {
+            if (view == DashboardViewType.LISTENING) {
                 reportsBadge = new Label();
                 reportsBadge.setId(REPORTS_BADGE_ID);
                 menuItemComponent = buildBadgeWrapper(menuItemComponent,
@@ -196,7 +207,9 @@ public final class DashboardMenu extends CustomComponent {
             }
 
             menuItemsLayout.addComponent(menuItemComponent);
+            
         }
+        menuItemsLayout.addComponent(buildToggleButton());
         return menuItemsLayout;
 
     }

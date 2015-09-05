@@ -1,10 +1,13 @@
 package com.vaadin.demo.dashboard.view.listening;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.google.common.eventbus.Subscribe;
+import com.kbdunn.vaadin.addons.mediaelement.MediaElementPlayer;
+import com.kbdunn.vaadin.addons.mediaelement.PlaybackEndedListener;
 import com.vaadin.demo.dashboard.event.DashboardEvent.ReportsCountUpdatedEvent;
 import com.vaadin.demo.dashboard.event.DashboardEvent.TransactionReportEvent;
 import com.vaadin.demo.dashboard.event.DashboardEventBus;
@@ -15,241 +18,151 @@ import com.vaadin.event.LayoutEvents.LayoutClickListener;
 import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FileResource;
+import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Audio;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.Layout;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.Notification.Type;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.TabSheet.CloseHandler;
+import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Video;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
-public final class ListeningView extends TabSheet implements View, CloseHandler,
-        ReportEditorListener {
+public final class ListeningView extends HorizontalLayout implements View {
 
-    public static final String CONFIRM_DIALOG_ID = "confirm-dialog";
+	public static final String CONFIRM_DIALOG_ID = "confirm-dialog";
+	private String HTML = "<!DOCTYPE html> \n"
+			+ "<html lang=\"en\"> \n"
+			+ "<head> \n"
+			+ "<meta charset=\"utf-8\" \n> "
+			+ "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> \n"
+			+ "<meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"> \n"
+			+ "<script type=\"text/javascript\" src=\"http://www.skypeassets.com/i/scom/js/skype-uri.js\"></script> \n"
+			+ "<div id=\"SkypeButton_Call_TapabrataPal_1\"> \n"
+			+ " <script type=\"text/javascript\"> \n" + "Skype.ui({ \n"
+			+ "\"name\": \"dropdown\", \n"
+			+ "\"element\": \"SkypeButton_Call_TapabrataPal_1\", \n"
+			+ "\"participants\": [\"TapabrataPal\"], \n"
+			+ "\"imageSize\": 32 \n" + "}); \n" + "</script> \n" + "</div> \n"
+			+ "</html>";
 
-    public ListeningView() {
-        setSizeFull();
-        addStyleName("reports");
-        addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
-        setCloseHandler(this);
-        DashboardEventBus.register(this);
+	private String HTML2 = "Skype.ui({ \n" + "\"name\": \"call\" , \n"
+			+ "\"element\": \"SkypeButton_Call_TapabrataPal_1\", \n"
+			+ "\"participants\": [\"TapabrataPal\"], \n"
+			+ "\"imageSize\": 32});";
 
-        addTab(buildDrafts());
-    }
+	public ListeningView() {
 
-    private Component buildDrafts() {
-        final VerticalLayout allDrafts = new VerticalLayout();
-        allDrafts.setSizeFull();
-        allDrafts.setCaption("Listening");
+		setSizeFull();
+		addStyleName("reports");
+		addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
+		// setCloseHandler(this);
+		DashboardEventBus.register(this);
+		addComponent(runYouTube());
+		final VerticalLayout mp3Layout = new VerticalLayout();
+		mp3Layout.addStyleName("mp3");
 
-        VerticalLayout titleAndDrafts = new VerticalLayout();
-        titleAndDrafts.setSizeUndefined();
-        titleAndDrafts.setSpacing(true);
-        titleAndDrafts.addStyleName("drafts");
-        allDrafts.addComponent(titleAndDrafts);
-        allDrafts
-                .setComponentAlignment(titleAndDrafts, Alignment.MIDDLE_CENTER);
+		final File song1 = new File(
+				"/Users/yaf107/Music/iTunes/iTunes Media/Music/Bhupinder Singh/Ghazal by Bhupinder Singh/01 Kya Batayen Humen Kya.m4a");
+		final File song = new File(song1.toURI());
+		Audio audio = new Audio();
+		audio.setSource(new FileResource(song));
+		mp3Layout.addComponent(audio);
+		addComponent(mp3Layout);
+		addComponent(showPDF());
+	}
 
-        Label draftsTitle = new Label("Drafts");
-        draftsTitle.addStyleName(ValoTheme.LABEL_H1);
-        draftsTitle.setSizeUndefined();
-        titleAndDrafts.addComponent(draftsTitle);
-        titleAndDrafts.setComponentAlignment(draftsTitle, Alignment.TOP_CENTER);
+	private void runSkype() {
+		Page.getCurrent().getJavaScript()
+				.execute("alert('Hello from server side.')");
+	}
 
-        titleAndDrafts.addComponent(buildDraftsList());
 
-        return allDrafts;
-    }
+	private Component showPDF() {
+		final VerticalLayout pdf = new VerticalLayout();
+		
+		Embedded e = new Embedded(null, new FileResource(new File(
+				"/Users/yaf107/Downloads/7ReadingSOL2010.pdf")));
+		e.setMimeType("application/pdf");
+		e.setType(Embedded.TYPE_BROWSER);
+		
+		e.setParameter("allowFullScreen", "true");
+		e.setWidth("320px");
+		e.setHeight("265px");
+//		pdf.addComponent(e);
+		// addComponent(e);
+		return e;
+	}
 
-    private Component buildDraftsList() {
-        HorizontalLayout drafts = new HorizontalLayout();
-        drafts.setSpacing(true);
+	private Component runYouTube() {
+		final VerticalLayout utube = new VerticalLayout();
+		utube.addStyleName("youtube");
+		utube.setSizeFull();
+		utube.setCaption("Youtube viedo");
+		utube.setSizeUndefined();
+		utube.setSpacing(true);
 
-        drafts.addComponent(buildDraftThumb());
-        drafts.addComponent(buildCreateBox());
+		// MediaElementPlayer yvideoPlayer = new MediaElementPlayer(
+		// MediaElementPlayer.Type.VIDEO);
+		// utube.addComponent(yvideoPlayer);
+		// yvideoPlayer.setSource(new ExternalResource(
+		// "https://youtu.be/iCtYXy5odNE"));
+		// yvideoPlayer.play();
 
-        return drafts;
-    }
+		Embedded e = new Embedded(null, new ExternalResource(
+				"http://www.youtube.com/v/grdNtbqw0VY"));
+		e.setMimeType("application/x-shockwave-flash");
+		e.setParameter("allowFullScreen", "true");
+		e.setWidth("320px");
+		e.setHeight("265px");
+		// addComponent(e);
+		return e;
+	}
 
-    private Component buildDraftThumb() {
-        VerticalLayout draftThumb = new VerticalLayout();
-        draftThumb.setSpacing(true);
+	private Component buildDrafts() {
+		final VerticalLayout allDrafts = new VerticalLayout();
+		allDrafts.setSizeFull();
+		allDrafts.setCaption("Listening");
 
-        draftThumb.addStyleName("draft-thumb");
-        Image draft = new Image(null, new ThemeResource(
-                "img/draft-report-thumb.png"));
-        draft.setWidth(160.0f, Unit.PIXELS);
-        draft.setHeight(200.0f, Unit.PIXELS);
-        draft.setDescription("Click to edit");
-        draftThumb.addComponent(draft);
-        Label draftTitle = new Label(
-                "Monthly revenue<br><span>Last modified 1 day ago</span>",
-                ContentMode.HTML);
-        draftTitle.setSizeUndefined();
-        draftThumb.addComponent(draftTitle);
+		VerticalLayout titleAndDrafts = new VerticalLayout();
+		titleAndDrafts.setSizeUndefined();
+		titleAndDrafts.setSpacing(true);
+		titleAndDrafts.addStyleName("drafts");
+		allDrafts.addComponent(titleAndDrafts);
+		allDrafts
+				.setComponentAlignment(titleAndDrafts, Alignment.MIDDLE_CENTER);
 
-        final Button delete = new Button("×");
-        delete.setDescription("Delete draft");
-        delete.setPrimaryStyleName("delete-button");
-        delete.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                Notification.show("Not implemented in this demo");
-            }
-        });
-        draftThumb.addComponent(delete);
+		Label draftsTitle = new Label("Drafts");
+		draftsTitle.addStyleName(ValoTheme.LABEL_H1);
+		draftsTitle.setSizeUndefined();
+		titleAndDrafts.addComponent(draftsTitle);
+		titleAndDrafts.setComponentAlignment(draftsTitle, Alignment.TOP_CENTER);
 
-        draftThumb.addLayoutClickListener(new LayoutClickListener() {
-            @Override
-            public void layoutClick(final LayoutClickEvent event) {
-                if (event.getButton() == MouseButton.LEFT
-                        && event.getChildComponent() != delete) {
-                    addReport(ReportType.MONTHLY, null);
-                }
-            }
-        });
+		return allDrafts;
+	}
 
-        return draftThumb;
-    }
 
-    private Component buildCreateBox() {
-        VerticalLayout createBox = new VerticalLayout();
-        createBox.setWidth(160.0f, Unit.PIXELS);
-        createBox.setHeight(200.0f, Unit.PIXELS);
-        createBox.addStyleName("create");
+	@Override
+	public void enter(final ViewChangeEvent event) {
+	}
 
-        Button create = new Button("Create New");
-        create.addStyleName(ValoTheme.BUTTON_PRIMARY);
-        create.addClickListener(new ClickListener() {
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                addReport(ReportType.EMPTY, null);
-            }
-        });
-
-        createBox.addComponent(create);
-        createBox.setComponentAlignment(create, Alignment.MIDDLE_CENTER);
-        return createBox;
-    }
-
-    public void addReport(final ReportType reportType, final Object prefillData) {
-        ReportEditor reportEditor = new ReportEditor(this);
-        addTab(reportEditor).setClosable(true);
-
-        if (reportType == ReportType.MONTHLY) {
-            reportEditor.setTitle("Monthly revenue");
-            reportEditor.addWidget(PaletteItemType.CHART, null);
-            reportEditor.addWidget(PaletteItemType.TABLE, null);
-        } else if (reportType == ReportType.EMPTY) {
-            DateFormat df = new SimpleDateFormat("M/dd/yyyy");
-            reportEditor.setTitle("Unnamed Report – " + (df.format(new Date()))
-                    + " (" + getComponentCount() + ")");
-        } else if (reportType == ReportType.TRANSACTIONS) {
-            reportEditor
-                    .setTitle("Generated report from selected transactions");
-            reportEditor.addWidget(PaletteItemType.TEXT, "");
-            reportEditor.addWidget(PaletteItemType.TRANSACTIONS, prefillData);
-        }
-
-        DashboardEventBus.post(new ReportsCountUpdatedEvent(
-                getComponentCount() - 1));
-        setSelectedTab(getComponentCount() - 1);
-    }
-
-    @Subscribe
-    public void createTransactionReport(final TransactionReportEvent event) {
-        addReport(ReportType.TRANSACTIONS, event.getTransactions());
-    }
-
-    @Override
-    public void onTabClose(final TabSheet tabsheet, final Component tabContent) {
-        Label message = new Label(
-                "You have not saved this report. Do you want to save or discard any changes you've made to this report?");
-        message.setWidth("25em");
-
-        final Window confirmDialog = new Window("Unsaved Changes");
-        confirmDialog.setId(CONFIRM_DIALOG_ID);
-        confirmDialog.setCloseShortcut(KeyCode.ESCAPE, null);
-        confirmDialog.setModal(true);
-        confirmDialog.setClosable(false);
-        confirmDialog.setResizable(false);
-
-        VerticalLayout root = new VerticalLayout();
-        root.setSpacing(true);
-        root.setMargin(true);
-        confirmDialog.setContent(root);
-
-        HorizontalLayout footer = new HorizontalLayout();
-        footer.addStyleName(ValoTheme.WINDOW_BOTTOM_TOOLBAR);
-        footer.setWidth("100%");
-        footer.setSpacing(true);
-
-        root.addComponents(message, footer);
-
-        Button ok = new Button("Save", new ClickListener() {
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                confirmDialog.close();
-                removeComponent(tabContent);
-                DashboardEventBus.post(new ReportsCountUpdatedEvent(
-                        getComponentCount() - 1));
-                Notification
-                        .show("The report was saved as a draft",
-                                "Actually, the report was just closed and deleted forever. As this is only a demo, it doesn't persist any data.",
-                                Type.TRAY_NOTIFICATION);
-            }
-        });
-        ok.addStyleName(ValoTheme.BUTTON_PRIMARY);
-
-        Button discard = new Button("Discard Changes", new ClickListener() {
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                confirmDialog.close();
-                removeComponent(tabContent);
-                DashboardEventBus.post(new ReportsCountUpdatedEvent(
-                        getComponentCount() - 1));
-            }
-        });
-        discard.addStyleName(ValoTheme.BUTTON_DANGER);
-
-        Button cancel = new Button("Cancel", new ClickListener() {
-            @Override
-            public void buttonClick(final ClickEvent event) {
-                confirmDialog.close();
-            }
-        });
-
-        footer.addComponents(discard, cancel, ok);
-        footer.setExpandRatio(discard, 1);
-
-        getUI().addWindow(confirmDialog);
-        confirmDialog.focus();
-    }
-
-    @Override
-    public void enter(final ViewChangeEvent event) {
-    }
-
-    @Override
-    public void titleChanged(final String newTitle, final ReportEditor editor) {
-        getTab(editor).setCaption(newTitle);
-    }
-
-    public enum ReportType {
-        MONTHLY, EMPTY, TRANSACTIONS
-    }
 
 }

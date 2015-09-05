@@ -20,6 +20,7 @@ import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
+import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
@@ -30,18 +31,13 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.components.calendar.CalendarComponentEvents.EventClick;
-import com.vaadin.ui.components.calendar.CalendarComponentEvents.EventClickHandler;
-import com.vaadin.ui.components.calendar.CalendarComponentEvents.EventResize;
-import com.vaadin.ui.components.calendar.CalendarComponentEvents.MoveEvent;
 import com.vaadin.ui.components.calendar.event.CalendarEvent;
 import com.vaadin.ui.components.calendar.event.CalendarEventProvider;
-import com.vaadin.ui.components.calendar.handler.BasicEventMoveHandler;
-import com.vaadin.ui.components.calendar.handler.BasicEventResizeHandler;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
@@ -57,16 +53,17 @@ public final class PracticeView extends CssLayout implements View {
 
         TabSheet tabs = new TabSheet();
         tabs.setSizeFull();
-        tabs.addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
+        tabs.addStyleName(ValoTheme.TABSHEET_ONLY_SELECTED_TAB_IS_CLOSABLE);
 
-        tabs.addComponent(buildCalendarView());
-        tabs.addComponent(buildCatalogView());
+        tabs.addComponent(buildGeneralPraticeView());
+        tabs.addComponent(buildSongPracticeView());
+        
 
         addComponent(tabs);
 
         tray = buildTray();
         addComponent(tray);
-
+//        tabs.addComponent(createMenuTree());
         injectMovieCoverStyles();
     }
 
@@ -76,6 +73,33 @@ public final class PracticeView extends CssLayout implements View {
         // A new instance of ScheduleView is created every time it's navigated
         // to so we'll need to clean up references to it on detach.
         DashboardEventBus.unregister(this);
+    }
+    
+   
+ 
+    
+    protected Component createMenuTree() {
+    	Panel menuPanel = new Panel("My menu");
+    	menuPanel.setHeightUndefined();
+        Tree menu = new Tree();
+        menu.addContainerProperty("caption", String.class, "");
+        menu.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+        menu.setItemCaptionPropertyId("caption");
+
+        Tree.ItemStyleGenerator itemStyleGenerator = new Tree.ItemStyleGenerator() {
+            private static final long serialVersionUID = -3231268865512947125L;
+
+            @Override
+            public String getStyle(Tree source, Object itemId) {
+                // Chapter title items do not contain a period
+                if (!((String)itemId).contains("."))
+                    return "chaptertitle";
+                return null;
+            }
+        }; 
+        menu.setItemStyleGenerator(itemStyleGenerator);
+        menuPanel.setContent(menu);
+        return menuPanel;
     }
 
     private void injectMovieCoverStyles() {
@@ -100,75 +124,17 @@ public final class PracticeView extends CssLayout implements View {
         Page.getCurrent().getStyles().add(styles);
     }
 
-    private Component buildCalendarView() {
-        VerticalLayout calendarLayout = new VerticalLayout();
-        calendarLayout.setCaption("History");
-        calendarLayout.setMargin(true);
-
-        calendar = new Calendar(new MovieEventProvider());
-        calendar.setWidth(100.0f, Unit.PERCENTAGE);
-        calendar.setHeight(1000.0f, Unit.PIXELS);
-
-        calendar.setHandler(new EventClickHandler() {
-            @Override
-            public void eventClick(final EventClick event) {
-                setTrayVisible(false);
-                MovieEvent movieEvent = (MovieEvent) event.getCalendarEvent();
-                MovieDetailsWindow.open(movieEvent.getMovie(),
-                        movieEvent.getStart(), movieEvent.getEnd());
-            }
-        });
-        calendarLayout.addComponent(calendar);
-
-        calendar.setFirstVisibleHourOfDay(11);
-        calendar.setLastVisibleHourOfDay(23);
-
-        calendar.setHandler(new BasicEventMoveHandler() {
-            @Override
-            public void eventMove(final MoveEvent event) {
-                CalendarEvent calendarEvent = event.getCalendarEvent();
-                if (calendarEvent instanceof MovieEvent) {
-                    MovieEvent editableEvent = (MovieEvent) calendarEvent;
-
-                    Date newFromTime = event.getNewStart();
-
-                    // Update event dates
-                    long length = editableEvent.getEnd().getTime()
-                            - editableEvent.getStart().getTime();
-                    setDates(editableEvent, newFromTime,
-                            new Date(newFromTime.getTime() + length));
-                    setTrayVisible(true);
-                }
-            }
-
-            protected void setDates(final MovieEvent event, final Date start,
-                    final Date end) {
-                event.start = start;
-                event.end = end;
-            }
-        });
-        calendar.setHandler(new BasicEventResizeHandler() {
-            @Override
-            public void eventResize(final EventResize event) {
-                Notification
-                        .show("You're not allowed to change the movie duration");
-            }
-        });
-
-        java.util.Calendar initialView = java.util.Calendar.getInstance();
-        initialView.add(java.util.Calendar.DAY_OF_WEEK,
-                -initialView.get(java.util.Calendar.DAY_OF_WEEK) + 1);
-        calendar.setStartDate(initialView.getTime());
-
-        initialView.add(java.util.Calendar.DAY_OF_WEEK, 6);
-        calendar.setEndDate(initialView.getTime());
-
-        return calendarLayout;
+    private Component buildGeneralPraticeView() {
+        VerticalLayout generalPracticeLayout = new VerticalLayout();
+        generalPracticeLayout.setCaption("General Practice");
+        generalPracticeLayout.setMargin(true);
+        generalPracticeLayout.addComponent(createMenuTree());
+        return generalPracticeLayout;
     }
 
-    private Component buildCatalogView() {
+    private Component buildSongPracticeView() {
         CssLayout catalog = new CssLayout();
-        catalog.setCaption("Practice");
+        catalog.setCaption("Song Practice");
         catalog.addStyleName("catalog");
 
         for (final Movie movie : DashboardUI.getDataProvider().getMovies()) {

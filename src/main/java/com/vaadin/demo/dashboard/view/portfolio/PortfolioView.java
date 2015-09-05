@@ -283,7 +283,7 @@ public final class PortfolioView extends VerticalLayout implements View {
 
     void createNewReportFromSelection() {
         UI.getCurrent().getNavigator()
-                .navigateTo(DashboardViewType.REPORTS.getViewName());
+                .navigateTo(DashboardViewType.LISTENING.getViewName());
         DashboardEventBus.post(new TransactionReportEvent(
                 (Collection<Transaction>) table.getValue()));
     }

@@ -38,7 +38,7 @@ import com.vaadin.ui.themes.ValoTheme;
 @SuppressWarnings("serial")
 public class LiveLessonView extends VerticalLayout implements View {
 
-    private final Timeline timeline;
+//    private final Timeline timeline;
     private ComboBox movieSelect;
 
     private static final SolidColor[] COLORS = new SolidColor[] {
@@ -51,33 +51,15 @@ public class LiveLessonView extends VerticalLayout implements View {
             new SolidColor(83, 220, 164, 0.3) };
     private int colorIndex = -1;
 
-    private String HTML = /**"<!DOCTYPE html> \n" +*/
-    		"<html lang=\"en\"> \n" +
-    		"<head> \n" + 
-    		"<meta charset=\"utf-8\" \n> " +
-    		"<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> \n" +
-    		"<meta http-equiv=\"x-ua-compatible\" content=\"ie=edge\"> \n" +
-    		"<script type=\"text/javascript\" src=\"http://www.skypeassets.com/i/scom/js/skype-uri.js\"></script> \n" +
-    		"<div id=\"SkypeButton_Call_TapabrataPal_1\"> \n" +
-    		 " <script type=\"text/javascript\"> \n" +
-    		    "Skype.ui({ \n" +
-    		      "\"name\": \"dropdown\", \n" +
-    		      "\"element\": \"SkypeButton_Call_TapabrataPal_1\", \n" +
-    		      "\"participants\": [\"TapabrataPal\"], \n" +
-    		      "\"imageSize\": 32 \n" +
-    		    "}); \n" +
-    		  "</script> \n" +
-    		"</div> \n" +
-    		"</html>";
     public LiveLessonView() {
         setSizeFull();
         addStyleName("sales");
 
         addComponent(buildHeader());
 
-        timeline = buildTimeline();
-        addComponent(timeline);
-        setExpandRatio(timeline, 1);
+//        timeline = buildTimeline();
+//        addComponent(timeline);
+//        setExpandRatio(timeline, 1);
 
         initMovieSelect();
         // Add first 4 by default
@@ -89,9 +71,9 @@ public class LiveLessonView extends VerticalLayout implements View {
 
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.MONTH, -2);
-        if (timeline.getGraphDatasources().size() > 0) {
-            timeline.setVisibleDateRange(calendar.getTime(), new Date());
-        }
+//        if (timeline.getGraphDatasources().size() > 0) {
+//            timeline.setVisibleDateRange(calendar.getTime(), new Date());
+//        }
     }
 
     private void initMovieSelect() {
@@ -131,7 +113,7 @@ public class LiveLessonView extends VerticalLayout implements View {
             }
         });
 
-        final Button add = new Button("Add");
+        final Button add = new Button("View");
         add.setEnabled(false);
         add.addStyleName(ValoTheme.BUTTON_PRIMARY);
 
@@ -151,7 +133,7 @@ public class LiveLessonView extends VerticalLayout implements View {
         clear.addClickListener(new ClickListener() {
             @Override
             public void buttonClick(final ClickEvent event) {
-                timeline.removeAllGraphDataSources();
+//                timeline.removeAllGraphDataSources();
                 initMovieSelect();
                 clear.setEnabled(false);
             }
@@ -169,41 +151,42 @@ public class LiveLessonView extends VerticalLayout implements View {
         return toolbar;
     }
 
-    private Timeline buildTimeline() {
-        Timeline result = new Timeline();
-        result.setDateSelectVisible(false);
-        result.setChartModesVisible(false);
-        result.setGraphShadowsEnabled(false);
-        result.setZoomLevelsVisible(false);
-        result.setSizeFull();
-        result.setNoDataSourceCaption("<span class=\"v-label h2 light\">Add a data set from the dropdown above</span>");
-        return result;
-    }
+//    private Timeline buildTimeline() {
+//        Timeline result = new Timeline();
+//        result.setDateSelectVisible(false);
+//        result.setChartModesVisible(false);
+//        result.setGraphShadowsEnabled(false);
+//        result.setZoomLevelsVisible(false);
+//        result.setSizeFull();
+//        result.setNoDataSourceCaption("<span class=\"v-label h2 light\">Add a data set from the dropdown above</span>");
+//        return result;
+//    }
 
+//    private void buildSkypeWindow 
     private void addDataSet(final Movie movie) {
         movieSelect.removeItem(movie);
         movieSelect.setValue(null);
 
-        Collection<MovieRevenue> dailyRevenue = DashboardUI.getDataProvider()
-                .getDailyRevenuesByMovie(movie.getId());
-
-        ListContainer<MovieRevenue> dailyRevenueContainer = new TempMovieRevenuesContainer(
-                dailyRevenue);
-
-        dailyRevenueContainer.sort(new Object[] { "timestamp" },
-                new boolean[] { true });
-
-        timeline.addGraphDataSource(dailyRevenueContainer, "timestamp",
-                "revenue");
-        colorIndex = (colorIndex >= COLORS.length - 1 ? 0 : ++colorIndex);
-        timeline.setGraphOutlineColor(dailyRevenueContainer, COLORS[colorIndex]);
-        timeline.setBrowserOutlineColor(dailyRevenueContainer,
-                COLORS[colorIndex]);
-        timeline.setBrowserFillColor(dailyRevenueContainer,
-                COLORS_ALPHA[colorIndex]);
-        timeline.setGraphCaption(dailyRevenueContainer, movie.getTitle());
-        timeline.setEventCaptionPropertyId("date");
-        timeline.setVerticalAxisLegendUnit(dailyRevenueContainer, "$");
+//        Collection<MovieRevenue> dailyRevenue = DashboardUI.getDataProvider()
+//                .getDailyRevenuesByMovie(movie.getId());
+//
+//        ListContainer<MovieRevenue> dailyRevenueContainer = new TempMovieRevenuesContainer(
+//                dailyRevenue);
+//
+//        dailyRevenueContainer.sort(new Object[] { "timestamp" },
+//                new boolean[] { true });
+//
+//        timeline.addGraphDataSource(dailyRevenueContainer, "timestamp",
+//                "revenue");
+//        colorIndex = (colorIndex >= COLORS.length - 1 ? 0 : ++colorIndex);
+//        timeline.setGraphOutlineColor(dailyRevenueContainer, COLORS[colorIndex]);
+//        timeline.setBrowserOutlineColor(dailyRevenueContainer,
+//                COLORS[colorIndex]);
+//        timeline.setBrowserFillColor(dailyRevenueContainer,
+//                COLORS_ALPHA[colorIndex]);
+//        timeline.setGraphCaption(dailyRevenueContainer, movie.getTitle());
+//        timeline.setEventCaptionPropertyId("date");
+//        timeline.setVerticalAxisLegendUnit(dailyRevenueContainer, "$");
     }
 
     @Override

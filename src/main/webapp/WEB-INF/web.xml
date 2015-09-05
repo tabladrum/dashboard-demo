@@ -10,7 +10,7 @@
 		<param-value>${productionMode}</param-value>
 	</context-param>
 	<servlet>
-		<servlet-name>QuickTicketsDashboard</servlet-name>
+		<servlet-name>musicompanion</servlet-name>
 		<servlet-class>com.vaadin.demo.dashboard.DashboardServlet</servlet-class>
 		<init-param>
 			<param-name>UI</param-name>
@@ -18,7 +18,7 @@
 		</init-param>
 	</servlet>
 	<servlet-mapping>
-		<servlet-name>QuickTicketsDashboard</servlet-name>
+		<servlet-name>musicompanion</servlet-name>
 		<url-pattern>/*</url-pattern>
 	</servlet-mapping>
 
