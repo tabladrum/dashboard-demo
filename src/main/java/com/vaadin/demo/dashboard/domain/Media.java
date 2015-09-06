@@ -4,7 +4,6 @@ public class Media {
 	private String url;
 	private String name;
 	private String desc;
-	private String source;
 	private MediaType type;
 	
 
@@ -40,13 +39,4 @@ public class Media {
 	public void setDesc(String desc) {
 		this.desc = desc;
 	}
-
-	public String getSource() {
-		return source;
-	}
-
-	public void setSource(String source) {
-		this.source = source;
-	}
-
 }

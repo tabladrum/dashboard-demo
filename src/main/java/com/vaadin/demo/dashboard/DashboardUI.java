@@ -26,7 +26,8 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
-@Theme("dashboard")
+//@Theme("dashboard")
+@Theme("tests-valo-facebook")
 @Widgetset("com.vaadin.demo.dashboard.DashboardWidgetSet")
 @Title("Music Lesson Companion")
 @SuppressWarnings("serial")

@@ -11,7 +11,13 @@
       -moz-box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1);
     }
-
+    
+  .v-tree-node-caption-toplevel {
+        border: 1px solid #d8d9d9;
+        background: #fff;
+        @include border-radius(6px);
+    }
+    
     .v-calendar-event-caption {
       right: 0;
       width: auto;

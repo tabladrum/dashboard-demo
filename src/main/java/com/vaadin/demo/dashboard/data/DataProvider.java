@@ -1,11 +1,14 @@
 package com.vaadin.demo.dashboard.data;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import com.vaadin.demo.dashboard.domain.DashboardNotification;
 import com.vaadin.demo.dashboard.domain.Movie;
 import com.vaadin.demo.dashboard.domain.MovieRevenue;
+import com.vaadin.demo.dashboard.domain.PracticeItem;
 import com.vaadin.demo.dashboard.domain.Transaction;
 import com.vaadin.demo.dashboard.domain.User;
 
@@ -73,4 +76,7 @@ public interface DataProvider {
      *         dates.
      */
     Collection<Transaction> getTransactionsBetween(Date startDate, Date endDate);
+    
+    
+    Map<String, ArrayList<PracticeItem>> getPracticeItems();
 }

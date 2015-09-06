@@ -1,48 +1,22 @@
 package com.vaadin.demo.dashboard.view.listening;
 
 import java.io.File;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import com.google.common.eventbus.Subscribe;
-import com.kbdunn.vaadin.addons.mediaelement.MediaElementPlayer;
-import com.kbdunn.vaadin.addons.mediaelement.PlaybackEndedListener;
-import com.vaadin.demo.dashboard.event.DashboardEvent.ReportsCountUpdatedEvent;
-import com.vaadin.demo.dashboard.event.DashboardEvent.TransactionReportEvent;
 import com.vaadin.demo.dashboard.event.DashboardEventBus;
-import com.vaadin.demo.dashboard.view.listening.ReportEditor.PaletteItemType;
-import com.vaadin.demo.dashboard.view.listening.ReportEditor.ReportEditorListener;
-import com.vaadin.event.LayoutEvents.LayoutClickEvent;
-import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.FileResource;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
-import com.vaadin.server.ThemeResource;
-import com.vaadin.shared.MouseEventDetails.MouseButton;
-import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Audio;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.TabSheet;
-import com.vaadin.ui.TabSheet.CloseHandler;
-import com.vaadin.ui.UI;
+import com.vaadin.ui.Tree;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.Video;
-import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
@@ -72,8 +46,8 @@ public final class ListeningView extends HorizontalLayout implements View {
 	public ListeningView() {
 
 		setSizeFull();
-		addStyleName("reports");
-		addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR);
+//		addStyleName("reports");
+//		addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR); 
 		// setCloseHandler(this);
 		DashboardEventBus.register(this);
 		addComponent(runYouTube());
@@ -86,8 +60,57 @@ public final class ListeningView extends HorizontalLayout implements View {
 		Audio audio = new Audio();
 		audio.setSource(new FileResource(song));
 		mp3Layout.addComponent(audio);
-		addComponent(mp3Layout);
-		addComponent(showPDF());
+//		addComponent(mp3Layout);
+//		addComponent(showPDF());
+		addComponent(loadTree());
+	}
+
+	Component loadTree() {
+		final Object[][] planets = new Object[][] {
+				new Object[] { "Mercury" },
+				new Object[] { "Venus" },
+				new Object[] { "Earth", "The Moon" },
+				new Object[] { "Mars", "Phobos", "Deimos" },
+				new Object[] { "Jupiter", "Io", "Europa", "Ganymedes",
+						"Callisto" },
+				new Object[] { "Saturn", "Titan", "Tethys", "Dione", "Rhea",
+						"Iapetus" },
+				new Object[] { "Uranus", "Miranda", "Ariel", "Umbriel",
+						"Titania", "Oberon" },
+				new Object[] { "Neptune", "Triton", "Proteus", "Nereid",
+						"Larissa" } };
+
+		Tree tree = new Tree("The Planets and Major Moons");
+
+		/* Add planets as root items in the tree. */
+		for (int i = 0; i < planets.length; i++) {
+			String planet = (String) (planets[i][0]);
+			tree.addItem(planet);
+
+			if (planets[i].length == 1) {
+				// The planet has no moons so make it a leaf.
+				tree.setChildrenAllowed(planet, false);
+			} else {
+				// Add children (moons) under the planets.
+				for (int j = 1; j < planets[i].length; j++) {
+					String moon = (String) planets[i][j];
+
+					// Add the item as a regular item.
+					tree.addItem(moon);
+
+					// Set it to be a child.
+					tree.setParent(moon, planet);
+
+					// Make the moons look like leaves.
+					tree.setChildrenAllowed(moon, false);
+				}
+
+				// Expand the subtree.
+				tree.expandItemsRecursively(planet);
+			}
+			tree.setIcon(FontAwesome.TREE);
+		}
+		return tree;
 	}
 
 	private void runSkype() {
@@ -95,19 +118,18 @@ public final class ListeningView extends HorizontalLayout implements View {
 				.execute("alert('Hello from server side.')");
 	}
 
-
 	private Component showPDF() {
 		final VerticalLayout pdf = new VerticalLayout();
-		
+
 		Embedded e = new Embedded(null, new FileResource(new File(
 				"/Users/yaf107/Downloads/7ReadingSOL2010.pdf")));
 		e.setMimeType("application/pdf");
 		e.setType(Embedded.TYPE_BROWSER);
-		
+
 		e.setParameter("allowFullScreen", "true");
 		e.setWidth("320px");
 		e.setHeight("265px");
-//		pdf.addComponent(e);
+		// pdf.addComponent(e);
 		// addComponent(e);
 		return e;
 	}
@@ -159,10 +181,8 @@ public final class ListeningView extends HorizontalLayout implements View {
 		return allDrafts;
 	}
 
-
 	@Override
 	public void enter(final ViewChangeEvent event) {
 	}
-
 
 }

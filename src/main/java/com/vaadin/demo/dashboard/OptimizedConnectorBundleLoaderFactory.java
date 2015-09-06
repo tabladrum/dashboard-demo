@@ -12,6 +12,7 @@ import com.vaadin.client.ui.orderedlayout.VerticalLayoutConnector;
 import com.vaadin.client.ui.panel.PanelConnector;
 import com.vaadin.client.ui.passwordfield.PasswordFieldConnector;
 import com.vaadin.client.ui.textfield.TextFieldConnector;
+import com.vaadin.client.ui.tree.TreeConnector;
 import com.vaadin.client.ui.ui.UIConnector;
 import com.vaadin.client.ui.window.WindowConnector;
 import com.vaadin.server.widgetsetutils.ConnectorBundleLoaderFactory;
@@ -31,6 +32,7 @@ public final class OptimizedConnectorBundleLoaderFactory extends
         eagerConnectors.add(PanelConnector.class.getName());
         eagerConnectors.add(LabelConnector.class.getName());
         eagerConnectors.add(WindowConnector.class.getName());
+        eagerConnectors.add(TreeConnector.class.getName());
     }
 
     @Override
