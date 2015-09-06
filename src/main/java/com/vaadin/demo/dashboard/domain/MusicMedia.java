@@ -1,18 +1,18 @@
 package com.vaadin.demo.dashboard.domain;
 
-public class Media {
+public class MusicMedia {
 	private String url;
 	private String name;
 	private String desc;
-	private MediaType type;
+	private MusicMediaType type;
 	
 
 
-	public MediaType getType() {
+	public MusicMediaType getType() {
 		return type;
 	}
 
-	public void setType(MediaType type) {
+	public void setType(MusicMediaType type) {
 		this.type = type;
 	}
 

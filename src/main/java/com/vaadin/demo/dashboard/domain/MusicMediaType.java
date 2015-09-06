@@ -1,5 +1,5 @@
 package com.vaadin.demo.dashboard.domain;
 
-public enum MediaType {
+public enum MusicMediaType {
 	AUDIO, VIDEO, DOCUMENT, PICTURE, HTMLLINK
 }

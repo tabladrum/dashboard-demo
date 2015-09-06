@@ -6,7 +6,7 @@ import java.util.List;
 public class PracticeItem {
 
 	private String type;
-	private List<Media> materials = new ArrayList<Media>();
+	private List<MusicMedia> materials = new ArrayList<MusicMedia>();
 
 	private String name;
 
@@ -26,19 +26,19 @@ public class PracticeItem {
 		this.name = name;
 	}
 
-	public List<Media> getMaterials() {
+	public List<MusicMedia> getMaterials() {
 		return materials;
 	}
 
-	public void setMaterials(List<Media> materials) {
+	public void setMaterials(List<MusicMedia> materials) {
 		this.materials = materials;
 	}
 
-	public void addMaterial(Media material) {
+	public void addMaterial(MusicMedia material) {
 		this.materials.add(material);
 	}
 
-	public void deleteMaterial(Media material) {
+	public void deleteMaterial(MusicMedia material) {
 		this.materials.remove(material);
 	}
 

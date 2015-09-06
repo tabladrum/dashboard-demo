@@ -8,11 +8,19 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.eventbus.Subscribe;
+import com.google.gwt.event.logical.shared.ValueChangeEvent;
+import com.vaadin.data.Container;
+import com.vaadin.data.Container.ItemSetChangeEvent;
+import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.data.Item;
+import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
+import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.demo.dashboard.DashboardUI;
 import com.vaadin.demo.dashboard.component.MovieDetailsWindow;
 import com.vaadin.demo.dashboard.domain.Movie;
+import com.vaadin.demo.dashboard.domain.MusicMedia;
+import com.vaadin.demo.dashboard.domain.MusicMediaType;
 import com.vaadin.demo.dashboard.domain.PracticeItem;
 import com.vaadin.demo.dashboard.domain.Transaction;
 import com.vaadin.demo.dashboard.event.DashboardEvent.BrowserResizeEvent;
@@ -21,14 +29,12 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
-import com.vaadin.event.dd.DragAndDropEvent;
-import com.vaadin.event.dd.DropHandler;
-import com.vaadin.event.dd.acceptcriteria.AcceptAll;
-import com.vaadin.event.dd.acceptcriteria.AcceptCriterion;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
+import com.vaadin.server.Resource;
 import com.vaadin.server.WebBrowser;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
@@ -42,12 +48,11 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Notification;
-import com.vaadin.ui.Notification.Type;
-import com.vaadin.ui.Tree.TreeDragMode;
+import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Tree;
+import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.components.calendar.event.CalendarEvent;
@@ -55,32 +60,33 @@ import com.vaadin.ui.components.calendar.event.CalendarEventProvider;
 import com.vaadin.ui.themes.ValoTheme;
 
 @SuppressWarnings("serial")
-public final class PracticeView extends VerticalLayout implements View, ItemClickListener {
+public final class PracticeView extends VerticalLayout implements View,
+		ItemClickListener {
 
 	private Calendar calendar;
-//	private final Component tray;
+	private PracticeItem selectedPracticeItem;
+
+	// private final Component tray;
 
 	public PracticeView() {
 		setSizeFull();
 		setMargin(true);
-//		addStyleName("schedule");
-////		addStyleName(ValoTheme.UI_WITH_MENU);
+		addStyleName("schedule");
 		DashboardEventBus.register(this);
-		
-//		TabSheet tabs = new TabSheet();
-//		tabs.setSizeFull();
-//		tabs.addStyleName(ValoTheme.TABSHEET_ONLY_SELECTED_TAB_IS_CLOSABLE);
 
-//		tabs.addComponent(buildGeneralPraticeView());
-//		tabs.addComponent(buildSongPracticeView());
+		TabSheet tabs = new TabSheet();
+		tabs.setSizeFull();
+		tabs.addStyleName(ValoTheme.TABSHEET_FRAMED);
 
-//		addComponent(tabs);
-		addComponent(buildGeneralPraticeView());
-//		addComponent(createMenuTree());
-//		tray = buildTray();
-//		addComponent(tray);
-		
-//		injectMovieCoverStyles();
+		tabs.addComponent(buildGeneralPraticeView());
+		tabs.addComponent(buildSongPracticeView());
+
+		addComponent(tabs);
+
+		// tray = buildTray();
+		// addComponent(tray);
+
+		// injectMovieCoverStyles();
 	}
 
 	@Override
@@ -97,22 +103,20 @@ public final class PracticeView extends VerticalLayout implements View, ItemClic
 		int itemId = 0; // Increasing numbering for itemId:s
 
 		final Object TYPE_PROPERTY = "practice";
-		// final Object NAME_PROPERTY = "name";
-		// final Object DESC_PROPERTY = "description";
-		// final Object URL_PROPERTY = "url";
+		final Object ICON_PROPERTY = "icon";
 		// Create new container
 		HierarchicalContainer prContainer = new HierarchicalContainer();
 		// Create containerproperty for name
 		prContainer.addContainerProperty(TYPE_PROPERTY, String.class, null);
-		// prContainer.addContainerProperty(NAME_PROPERTY, String.class, null);
-		// prContainer.addContainerProperty(DESC_PROPERTY, String.class, null);
-		// prContainer.addContainerProperty(URL_PROPERTY, String.class, null);
+		prContainer.addContainerProperty(ICON_PROPERTY, Resource.class, null);
+		prContainer.addContainerProperty("details", PracticeItem.class, null);
 		Map<String, ArrayList<PracticeItem>> practiceItems = DashboardUI
 				.getDataProvider().getPracticeItems();
 		for (String key : practiceItems.keySet()) {
 			int typeId = itemId;
 			item = prContainer.addItem(typeId);
 			item.getItemProperty(TYPE_PROPERTY).setValue(key);
+			item.getItemProperty(ICON_PROPERTY).setValue(FontAwesome.MUSIC);
 			prContainer.setChildrenAllowed(typeId, true);
 			for (Iterator<PracticeItem> iterator = practiceItems.get(key)
 					.iterator(); iterator.hasNext();) {
@@ -121,6 +125,9 @@ public final class PracticeView extends VerticalLayout implements View, ItemClic
 				item = prContainer.addItem(nameId);
 				item.getItemProperty(TYPE_PROPERTY).setValue(
 						practiceItem.getName());
+				item.getItemProperty("details").setValue(practiceItem);
+				item.getItemProperty(ICON_PROPERTY).setValue(
+						FontAwesome.PAPERCLIP);
 				prContainer.setParent(nameId, typeId);
 				prContainer.setChildrenAllowed(nameId, false);
 			}
@@ -130,38 +137,34 @@ public final class PracticeView extends VerticalLayout implements View, ItemClic
 	}
 
 	Component generalPracticeMenuPanel() {
-        Panel panel = new Panel("Custom Caption");
-        panel.addStyleName("color3");
-        panel.setContent(generalPracticeMenuPanelContent());
-        return panel;
+		Panel panel = new Panel("Your Practice List");
+		panel.addStyleName("color2");
+		panel.setWidthUndefined();
+		panel.setContent(generalPracticeMenuPanelContent());
+		return panel;
 	}
 
 	Component generalPracticeMenuPanelContent() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.setSizeFull();
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        Label content = new Label(
-                "Suspendisse dictum feugiat nisl ut dapibus. Mauris iaculis porttitor posuere. Praesent id metus massa, ut blandit odio.");
-        content.setWidth("10em");
-        layout.addComponent(content);
-        layout.addComponent(createMenuTree());
-        
-        Button button = new Button("Button");
-        button.setSizeFull();
-        layout.addComponent(button);
-        return layout;
-    }
-	
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSizeFull();
+		layout.setMargin(true);
+		layout.setSpacing(true);
+		layout.addComponent(createMenuTree());
+
+		return layout;
+	}
+
 	protected Component createMenuTree() {
-		Tree menu = new Tree("Your practice menu");
+		Tree menu = new Tree();
 		menu.addContainerProperty("caption", String.class, "");
 		menu.setItemCaptionMode(ItemCaptionMode.PROPERTY);
 		menu.setItemCaptionPropertyId("caption");
 		menu.setContainerDataSource(getPracticeItemContainer());
 		menu.setItemCaptionPropertyId("practice");
-		menu.setItemCaptionMode(ItemCaptionMode.PROPERTY);
-		menu.expandItem(getPracticeItemContainer().getItemIds().iterator().next());
+		// menu.setItemCaptionMode(ItemCaptionMode.PROPERTY);
+		menu.setItemIconPropertyId("icon");
+		menu.expandItem(getPracticeItemContainer().getItemIds().iterator()
+				.next());
 		menu.setImmediate(true);
 		menu.setVisible(true);
 		menu.setEnabled(true);
@@ -169,12 +172,19 @@ public final class PracticeView extends VerticalLayout implements View, ItemClic
 		menu.setDragMode(TreeDragMode.NODE);
 		menu.setSizeFull();
 		menu.addItemClickListener(this);
+		menu.addItemClickListener(new ItemClickListener() {
+			@Override
+			public void itemClick(ItemClickEvent event) {
+				selectedPracticeItem = (PracticeItem) event.getItem()
+						.getItemProperty("details").getValue();
+				
+//				generalPracticeItemDetailsContent();
+				itemContainer();
 
+			}
+		});
 		return menu;
 	}
-	
-
-
 
 	private void injectMovieCoverStyles() {
 		// Add all movie cover images as classes to CSSInject
@@ -199,12 +209,90 @@ public final class PracticeView extends VerticalLayout implements View, ItemClic
 	}
 
 	private Component buildGeneralPraticeView() {
-		VerticalLayout generalPracticeLayout = new VerticalLayout();
+		HorizontalLayout generalPracticeLayout = new HorizontalLayout();
 		generalPracticeLayout.setCaption("General Practice");
 		addStyleName(ValoTheme.UI_WITH_MENU);
 		generalPracticeLayout.setMargin(true);
 		generalPracticeLayout.addComponent(generalPracticeMenuPanel());
+		generalPracticeLayout
+				.addComponent(generalPracticeItemDetails(selectedPracticeItem));
 		return generalPracticeLayout;
+	}
+
+	private Component generalPracticeItemDetails(PracticeItem item) {
+		Panel panel = new Panel("Details");
+		panel.addStyleName("color2");
+		panel.setWidthUndefined();
+		panel.setContent(generalPracticeItemDetailsContent());
+		return panel;
+	}
+
+	IndexedContainer c = new IndexedContainer();
+	
+	@SuppressWarnings("unchecked")
+	private Container itemContainer() {
+		c.removeAllItems();
+		c.addContainerProperty("name", String.class, null);
+		c.addContainerProperty("url", String.class, null);
+		c.addContainerProperty("type", MusicMediaType.class, null);
+		int id = 0;
+		if (selectedPracticeItem != null) {
+			for (MusicMedia m : selectedPracticeItem.getMaterials()) {
+				Item item = c.addItem(id);
+				item.getItemProperty("name").setValue(m.getName());
+				item.getItemProperty("url").setValue(m.getUrl());
+				item.getItemProperty("type").setValue(m.getType());
+				id++;
+//				c.addValueChangeListener(listener);
+			}
+		}
+
+		return c;
+
+	}
+
+	private Component generalPracticeItemDetailsContent() {
+		VerticalLayout select = new VerticalLayout();
+		select.setMargin(true);
+		final OptionGroup options = new OptionGroup("Choose:");
+		options.addStyleName("large");
+		options.setMultiSelect(true);
+		options.setContainerDataSource(c);
+		options.addItemSetChangeListener(new ItemSetChangeListener() {
+
+			@Override
+			public void containerItemSetChange(ItemSetChangeEvent event) {
+				// TODO Auto-generated method stub
+				options.setItemCaptionPropertyId("name");
+				
+				options.setContainerDataSource(c);
+			}
+
+		});
+		options.addValueChangeListener(new ValueChangeListener() {
+			
+			@Override
+			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
+				options.setItemCaptionPropertyId("name");
+				
+				options.setContainerDataSource(c);
+				
+			}
+		});
+		// options.addItem("Option One");
+		// options.addItem("Option Two");
+		// options.addItem("Option Three");
+		// options.select("Option One");
+		// options.setItemIcon("Option One", FontAwesome.PENCIL);
+		// options.setItemIcon("Option Two", FontAwesome.VIDEO_CAMERA);
+		// options.setItemIcon("Option Three", FontAwesome.YOUTUBE);
+		select.addComponent(options);
+
+		Button button = new Button("Go");
+		button.setSizeFull();
+
+		select.addComponent(button);
+		return select;
 	}
 
 	private Component buildSongPracticeView() {
@@ -258,7 +346,7 @@ public final class PracticeView extends VerticalLayout implements View, ItemClic
 		ClickListener close = new ClickListener() {
 			@Override
 			public void buttonClick(final ClickEvent event) {
-//				setTrayVisible(false);
+				// setTrayVisible(false);
 			}
 		};
 
@@ -281,14 +369,14 @@ public final class PracticeView extends VerticalLayout implements View, ItemClic
 		return tray;
 	}
 
-//	private void setTrayVisible(final boolean visible) {
-//		final String styleReveal = "v-animate-reveal";
-//		if (visible) {
-//			tray.addStyleName(styleReveal);
-//		} else {
-//			tray.removeStyleName(styleReveal);
-//		}
-//	}
+	// private void setTrayVisible(final boolean visible) {
+	// final String styleReveal = "v-animate-reveal";
+	// if (visible) {
+	// tray.addStyleName(styleReveal);
+	// } else {
+	// tray.removeStyleName(styleReveal);
+	// }
+	// }
 
 	@Subscribe
 	public void browserWindowResized(final BrowserResizeEvent event) {
@@ -382,12 +470,11 @@ public final class PracticeView extends VerticalLayout implements View, ItemClic
 		}
 
 	}
-	
 
 	@Override
 	public void itemClick(ItemClickEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }

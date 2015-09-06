@@ -9,8 +9,8 @@ import java.util.Map;
 import com.vaadin.addon.charts.model.style.Color;
 import com.vaadin.addon.charts.model.style.SolidColor;
 import com.vaadin.demo.dashboard.domain.DashboardNotification;
-import com.vaadin.demo.dashboard.domain.Media;
-import com.vaadin.demo.dashboard.domain.MediaType;
+import com.vaadin.demo.dashboard.domain.MusicMedia;
+import com.vaadin.demo.dashboard.domain.MusicMediaType;
 import com.vaadin.demo.dashboard.domain.PracticeItem;
 
 public abstract class DummyDataGenerator {
@@ -170,26 +170,26 @@ public abstract class DummyDataGenerator {
 			pi.setName(pi.getType() + " Practice " + i);
 			int j = 1;
 
-			Media m = new Media();
-			m.setName(pi.getType() + " Media " + j);
+			MusicMedia m = new MusicMedia();
+			m.setName(pi.getName() + " Media " + j);
 			m.setDesc(m.getName() + " Practice Material " + j);
-			m.setType(MediaType.AUDIO);
+			m.setType(MusicMediaType.AUDIO);
 			m.setUrl("URL: " + j);
 			pi.addMaterial(m);
 
 			j++;
-			m = new Media();
-			m.setName(pi.getType() + " Media " + j);
+			m = new MusicMedia();
+			m.setName(pi.getName() + " Media " + j);
 			m.setDesc(m.getName() + " Practice Material " + j);
-			m.setType(MediaType.DOCUMENT);
+			m.setType(MusicMediaType.DOCUMENT);
 			m.setUrl("URL: " + j);
 			pi.addMaterial(m);
 
 			j++;
-			m = new Media();
-			m.setName(pi.getType() + " Media " + j);
+			m = new MusicMedia();
+			m.setName(pi.getName() + " Media " + j);
 			m.setDesc(m.getName() + " Practice Material " + j);
-			m.setType(MediaType.VIDEO);
+			m.setType(MusicMediaType.VIDEO);
 			m.setUrl("URL: " + j);
 			pi.addMaterial(m);
 
@@ -204,26 +204,26 @@ public abstract class DummyDataGenerator {
 			pi.setName(pi.getType() + " Practice " + i);
 			int j = 1;
 
-			Media m = new Media();
-			m.setName(pi.getType() + " Media " + j);
+			MusicMedia m = new MusicMedia();
+			m.setName(pi.getName() + " Media " + j);
 			m.setDesc(m.getName() + " Practice Material " + j);
-			m.setType(MediaType.AUDIO);
+			m.setType(MusicMediaType.AUDIO);
 			m.setUrl("URL: " + j);
 			pi.addMaterial(m);
 
 			j++;
-			m = new Media();
-			m.setName(pi.getType() + " Media " + j);
+			m = new MusicMedia();
+			m.setName(pi.getName() + " Media " + j);
 			m.setDesc(m.getName() + " Practice Material " + j);
-			m.setType(MediaType.DOCUMENT);
+			m.setType(MusicMediaType.DOCUMENT);
 			m.setUrl("URL: " + j);
 			pi.addMaterial(m);
 
 			j++;
-			m = new Media();
-			m.setName(pi.getType() + " Media " + j);
+			m = new MusicMedia();
+			m.setName(pi.getName() + " Media " + j);
 			m.setDesc(m.getName() + " Practice Material " + j);
-			m.setType(MediaType.VIDEO);
+			m.setType(MusicMediaType.VIDEO);
 			m.setUrl("URL: " + j);
 			pi.addMaterial(m);
 

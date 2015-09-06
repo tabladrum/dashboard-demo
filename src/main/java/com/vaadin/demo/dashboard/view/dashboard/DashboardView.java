@@ -4,11 +4,12 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import com.google.common.eventbus.Subscribe;
+import com.vaadin.annotations.Theme;
 import com.vaadin.demo.dashboard.DashboardUI;
-import com.vaadin.demo.dashboard.component.SparklineChart;
+import com.vaadin.demo.dashboard.component.Listening;
 import com.vaadin.demo.dashboard.component.LiveLessons;
 import com.vaadin.demo.dashboard.component.Practice;
-import com.vaadin.demo.dashboard.component.Listening;
+import com.vaadin.demo.dashboard.component.SparklineChart;
 import com.vaadin.demo.dashboard.data.dummy.DummyDataGenerator;
 import com.vaadin.demo.dashboard.domain.DashboardNotification;
 import com.vaadin.demo.dashboard.event.DashboardEvent.CloseOpenWindowsEvent;
@@ -110,7 +111,7 @@ public final class DashboardView extends Panel implements View,
 
     private Component buildHeader() {
         HorizontalLayout header = new HorizontalLayout();
-        header.addStyleName("viewheader");
+        header.addStyleName("tests-valo");
         header.setSpacing(true);
 
         titleLabel = new Label("Main");
