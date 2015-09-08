@@ -1,5 +1,6 @@
 package com.vaadin.demo.dashboard.view.practice;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -8,12 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.common.eventbus.Subscribe;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.vaadin.data.Container;
 import com.vaadin.data.Container.ItemSetChangeEvent;
 import com.vaadin.data.Container.ItemSetChangeListener;
 import com.vaadin.data.Item;
-import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.HierarchicalContainer;
 import com.vaadin.data.util.IndexedContainer;
 import com.vaadin.demo.dashboard.DashboardUI;
@@ -29,9 +28,11 @@ import com.vaadin.event.ItemClickEvent;
 import com.vaadin.event.ItemClickEvent.ItemClickListener;
 import com.vaadin.event.LayoutEvents.LayoutClickEvent;
 import com.vaadin.event.LayoutEvents.LayoutClickListener;
+import com.vaadin.event.ShortcutAction.KeyCode;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
+import com.vaadin.server.FileResource;
 import com.vaadin.server.FontAwesome;
 import com.vaadin.server.Page;
 import com.vaadin.server.Resource;
@@ -39,22 +40,30 @@ import com.vaadin.server.WebBrowser;
 import com.vaadin.shared.MouseEventDetails.MouseButton;
 import com.vaadin.ui.AbstractSelect.ItemCaptionMode;
 import com.vaadin.ui.Alignment;
+import com.vaadin.ui.Audio;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.Calendar;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Embedded;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.OptionGroup;
 import com.vaadin.ui.Panel;
+import com.vaadin.ui.RichTextArea;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.Tree.TreeDragMode;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
+import com.vaadin.ui.Window.CloseEvent;
+import com.vaadin.ui.Window.CloseListener;
+import com.vaadin.ui.Window.ResizeEvent;
+import com.vaadin.ui.Window.ResizeListener;
 import com.vaadin.ui.components.calendar.event.CalendarEvent;
 import com.vaadin.ui.components.calendar.event.CalendarEventProvider;
 import com.vaadin.ui.themes.ValoTheme;
@@ -177,8 +186,6 @@ public final class PracticeView extends VerticalLayout implements View,
 			public void itemClick(ItemClickEvent event) {
 				selectedPracticeItem = (PracticeItem) event.getItem()
 						.getItemProperty("details").getValue();
-				
-//				generalPracticeItemDetailsContent();
 				itemContainer();
 
 			}
@@ -211,7 +218,7 @@ public final class PracticeView extends VerticalLayout implements View,
 	private Component buildGeneralPraticeView() {
 		HorizontalLayout generalPracticeLayout = new HorizontalLayout();
 		generalPracticeLayout.setCaption("General Practice");
-		addStyleName(ValoTheme.UI_WITH_MENU);
+		// addStyleName(ValoTheme.UI_WITH_MENU);
 		generalPracticeLayout.setMargin(true);
 		generalPracticeLayout.addComponent(generalPracticeMenuPanel());
 		generalPracticeLayout
@@ -228,13 +235,14 @@ public final class PracticeView extends VerticalLayout implements View,
 	}
 
 	IndexedContainer c = new IndexedContainer();
-	
+
 	@SuppressWarnings("unchecked")
 	private Container itemContainer() {
 		c.removeAllItems();
 		c.addContainerProperty("name", String.class, null);
 		c.addContainerProperty("url", String.class, null);
 		c.addContainerProperty("type", MusicMediaType.class, null);
+		c.addContainerProperty("icon", FontAwesome.class, null);
 		int id = 0;
 		if (selectedPracticeItem != null) {
 			for (MusicMedia m : selectedPracticeItem.getMaterials()) {
@@ -242,8 +250,32 @@ public final class PracticeView extends VerticalLayout implements View,
 				item.getItemProperty("name").setValue(m.getName());
 				item.getItemProperty("url").setValue(m.getUrl());
 				item.getItemProperty("type").setValue(m.getType());
+				switch (m.getType()) {
+				case AUDIO:
+					item.getItemProperty("icon").setValue(
+							FontAwesome.SOUNDCLOUD);
+					break;
+				case VIDEO:
+					item.getItemProperty("icon").setValue(
+							FontAwesome.VIDEO_CAMERA);
+					break;
+				case DOCUMENT:
+					item.getItemProperty("icon").setValue(FontAwesome.BOOK);
+					break;
+
+				case PICTURE:
+					item.getItemProperty("icon")
+							.setValue(FontAwesome.PICTURE_O);
+					break;
+				case HTMLLINK:
+					item.getItemProperty("icon").setValue(FontAwesome.HTML5);
+					break;
+				default:
+					item.getItemProperty("icon").setValue(
+							FontAwesome.QUESTION_CIRCLE);
+					break;
+				}
 				id++;
-//				c.addValueChangeListener(listener);
 			}
 		}
 
@@ -264,35 +296,217 @@ public final class PracticeView extends VerticalLayout implements View,
 			public void containerItemSetChange(ItemSetChangeEvent event) {
 				// TODO Auto-generated method stub
 				options.setItemCaptionPropertyId("name");
-				
+				options.setItemIconPropertyId("icon");
 				options.setContainerDataSource(c);
 			}
 
 		});
-		options.addValueChangeListener(new ValueChangeListener() {
-			
-			@Override
-			public void valueChange(com.vaadin.data.Property.ValueChangeEvent event) {
-				options.setItemCaptionPropertyId("name");
-				
-				options.setContainerDataSource(c);
-				
-			}
-		});
-		// options.addItem("Option One");
-		// options.addItem("Option Two");
-		// options.addItem("Option Three");
-		// options.select("Option One");
-		// options.setItemIcon("Option One", FontAwesome.PENCIL);
-		// options.setItemIcon("Option Two", FontAwesome.VIDEO_CAMERA);
-		// options.setItemIcon("Option Three", FontAwesome.YOUTUBE);
+
 		select.addComponent(options);
-
-		Button button = new Button("Go");
+		Button button = new Button("Open Window", new ClickListener() {
+			@Override
+			public void buttonClick(final ClickEvent event) {
+				Window win = showPracticeMaterial();
+				getUI().addWindow(win);
+				win.center();
+				win.focus();
+				event.getButton().setEnabled(!options.isEmpty());
+			}
+		});
+		// show.addStyleName("primary");
 		button.setSizeFull();
-
 		select.addComponent(button);
 		return select;
+	}
+
+	private Window showPracticeMaterial() {
+		final Window win = new Window("Practice: "
+				+ selectedPracticeItem.getName());
+		setSpacing(true);
+		setMargin(true);
+		// win.setWidth("380px");
+		// win.setHeightUndefined();
+		win.setClosable(true);
+		win.setResizable(true);
+		win.setModal(true);
+
+		win.setCloseShortcut(KeyCode.ESCAPE, null);
+		win.setSizeFull();
+
+		win.addCloseListener(new CloseListener() {
+
+			@Override
+			public void windowClose(CloseEvent e) {
+				// TODO Auto-generated method stub
+
+			}
+		});
+		win.addResizeListener(new ResizeListener() {
+
+			@Override
+			public void windowResized(ResizeEvent e) {
+				// TODO Auto-generated method stub
+				e.getWindow().getContent().setSizeFull();
+			}
+
+		});
+		win.setContent(windowContentPanel());
+
+		return win;
+	}
+
+	private Component windowContentPanel() {
+		HorizontalLayout root = new HorizontalLayout();
+		VerticalLayout lefttop = new VerticalLayout();
+		VerticalLayout leftbottom = new VerticalLayout();
+		VerticalLayout right = new VerticalLayout();
+		VerticalLayout left = new VerticalLayout();
+
+
+		Panel videoPanel = new Panel("Video");
+		videoPanel.addStyleName("color2");
+		videoPanel.setContent(loadVideo());
+		videoPanel.setSizeFull();
+		videoPanel.setResponsive(true);
+
+		Panel audioPanel = new Panel("Audio");
+		audioPanel.addStyleName("color2");
+		audioPanel.setContent(loadAudio());
+		audioPanel.setResponsive(true);
+		audioPanel.setSizeFull();
+
+		Panel docPanel = new Panel("Score");
+		docPanel.addStyleName("color2");
+		docPanel.setContent(loadDocument());
+		docPanel.setSizeFull();
+		docPanel.setResponsive(true);
+
+		Panel notePanel = new Panel("Notes");
+		notePanel.addStyleName("color2");
+		notePanel.setContent(loadNotes());
+		notePanel.setResponsive(true);
+		notePanel.setSizeFull();
+
+		lefttop.setSizeFull();
+		leftbottom.setSizeFull();
+		left.setSizeFull();
+		right.setSizeFull();
+		lefttop.addComponent(videoPanel);
+		leftbottom.addComponent(audioPanel);
+		leftbottom.addComponent(notePanel);
+		left.addComponent(lefttop);
+		left.addComponent(leftbottom);
+		right.addComponent(docPanel);
+		root.addComponent(left);
+		root.addComponent(right);
+		root.setSizeFull();
+		return root;
+	}
+
+	private Component windowContentSubWindow() {
+		HorizontalLayout root = new HorizontalLayout();
+		VerticalLayout lefttop = new VerticalLayout();
+		VerticalLayout leftbottom = new VerticalLayout();
+		VerticalLayout right = new VerticalLayout();
+		VerticalLayout left = new VerticalLayout();
+
+
+		Window videoPanel = new Window("Video");
+		videoPanel.addStyleName("color2");
+		videoPanel.setContent(loadVideo());
+		videoPanel.setSizeFull();
+		videoPanel.setResponsive(true);
+
+		Window audioPanel = new Window("Audio");
+		audioPanel.addStyleName("color2");
+		audioPanel.setContent(loadAudio());
+		audioPanel.setResponsive(true);
+		audioPanel.setSizeFull();
+
+		Window docPanel = new Window("Score");
+		docPanel.addStyleName("color2");
+		docPanel.setContent(loadDocument());
+		docPanel.setSizeFull();
+		docPanel.setResponsive(true);
+
+		Window notePanel = new Window("Notes");
+		notePanel.addStyleName("color2");
+		notePanel.setContent(loadNotes());
+		notePanel.setResponsive(true);
+		notePanel.setSizeFull();
+
+		lefttop.setSizeFull();
+		leftbottom.setSizeFull();
+		left.setSizeFull();
+		right.setSizeFull();
+		lefttop.addComponent(videoPanel);
+		leftbottom.addComponent(audioPanel);
+		leftbottom.addComponent(notePanel);
+		left.addComponent(lefttop);
+		left.addComponent(leftbottom);
+		right.addComponent(docPanel);
+		root.addComponent(left);
+		root.addComponent(right);
+		root.setSizeFull();
+		return root;
+	}
+
+	
+	private Component loadDocument() {
+		final VerticalLayout pdf = new VerticalLayout();
+		pdf.setMargin(true);
+		pdf.setSpacing(true);
+		Embedded e = new Embedded(null, new FileResource(new File(
+				"/Users/yaf107/Downloads/7ReadingSOL2010.pdf")));
+		e.setMimeType("application/pdf");
+		e.setType(Embedded.TYPE_BROWSER);
+
+		e.setParameter("allowFullScreen", "true");
+		e.setSizeFull();
+		pdf.addComponent(e);
+		pdf.setSizeFull();
+		// addComponent(e);
+		return pdf;
+	}
+
+	private Component loadVideo() {
+		final VerticalLayout video = new VerticalLayout();
+		video.setSizeFull();
+		video.setSpacing(true);
+		video.setSpacing(true);
+		// MediaElementPlayer yvideoPlayer = new MediaElementPlayer(
+		// MediaElementPlayer.Type.VIDEO);
+		// video.addComponent(yvideoPlayer);
+		// yvideoPlayer.setSource(new ExternalResource(
+		// "https://youtu.be/iCtYXy5odNE"));
+		// yvideoPlayer.play();
+
+		Embedded e = new Embedded(null, new ExternalResource(
+				"http://www.youtube.com/v/grdNtbqw0VY"));
+		e.setMimeType("application/x-shockwave-flash");
+		e.setParameter("allowFullScreen", "true");
+		e.setSizeFull();
+		video.addComponent(e);
+		return video;
+	}
+
+	private Component loadAudio() {
+		final File song1 = new File(
+				"/Users/yaf107/Music/iTunes/iTunes Media/Music/Bhupinder Singh/Ghazal by Bhupinder Singh/01 Kya Batayen Humen Kya.m4a");
+		final File song = new File(song1.toURI());
+		Audio audio = new Audio();
+		audio.setSource(new FileResource(song));
+		audio.setSizeFull();
+		return audio;
+	}
+
+	private Component loadNotes() {
+		VerticalLayout notes = new VerticalLayout();
+		RichTextArea rta = new RichTextArea("Read-only");
+		rta.setValue("<b>Some</b> <i>rich</i> content");
+		rta.setReadOnly(true);
+		notes.addComponent(rta);
+		return notes;
 	}
 
 	private Component buildSongPracticeView() {

@@ -50,7 +50,7 @@ public final class ListeningView extends HorizontalLayout implements View {
 //		addStyleName(ValoTheme.TABSHEET_PADDED_TABBAR); 
 		// setCloseHandler(this);
 		DashboardEventBus.register(this);
-		addComponent(runYouTube());
+//		addComponent(runYouTube());
 		final VerticalLayout mp3Layout = new VerticalLayout();
 		mp3Layout.addStyleName("mp3");
 
@@ -118,46 +118,6 @@ public final class ListeningView extends HorizontalLayout implements View {
 				.execute("alert('Hello from server side.')");
 	}
 
-	private Component showPDF() {
-		final VerticalLayout pdf = new VerticalLayout();
-
-		Embedded e = new Embedded(null, new FileResource(new File(
-				"/Users/yaf107/Downloads/7ReadingSOL2010.pdf")));
-		e.setMimeType("application/pdf");
-		e.setType(Embedded.TYPE_BROWSER);
-
-		e.setParameter("allowFullScreen", "true");
-		e.setWidth("320px");
-		e.setHeight("265px");
-		// pdf.addComponent(e);
-		// addComponent(e);
-		return e;
-	}
-
-	private Component runYouTube() {
-		final VerticalLayout utube = new VerticalLayout();
-		utube.addStyleName("youtube");
-		utube.setSizeFull();
-		utube.setCaption("Youtube viedo");
-		utube.setSizeUndefined();
-		utube.setSpacing(true);
-
-		// MediaElementPlayer yvideoPlayer = new MediaElementPlayer(
-		// MediaElementPlayer.Type.VIDEO);
-		// utube.addComponent(yvideoPlayer);
-		// yvideoPlayer.setSource(new ExternalResource(
-		// "https://youtu.be/iCtYXy5odNE"));
-		// yvideoPlayer.play();
-
-		Embedded e = new Embedded(null, new ExternalResource(
-				"http://www.youtube.com/v/grdNtbqw0VY"));
-		e.setMimeType("application/x-shockwave-flash");
-		e.setParameter("allowFullScreen", "true");
-		e.setWidth("320px");
-		e.setHeight("265px");
-		// addComponent(e);
-		return e;
-	}
 
 	private Component buildDrafts() {
 		final VerticalLayout allDrafts = new VerticalLayout();

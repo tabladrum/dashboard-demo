@@ -71,8 +71,8 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     private Component buildContent() {
-        final CssLayout menuContent = new CssLayout();
-//        final VerticalLayout menuContent = new VerticalLayout();
+//        final CssLayout menuContent = new CssLayout();
+        final VerticalLayout menuContent = new VerticalLayout();
         menuContent.addStyleName("sidebar");
         menuContent.addStyleName(ValoTheme.MENU_PART);
         menuContent.addStyleName("no-vertical-drag-hints");
@@ -160,7 +160,8 @@ public final class DashboardMenu extends CustomComponent {
     }
 
     private Component buildMenuItems() {
-        CssLayout menuItemsLayout = new CssLayout();
+//        CssLayout menuItemsLayout = new CssLayout();
+    	VerticalLayout menuItemsLayout = new VerticalLayout();
         menuItemsLayout.addStyleName("valo-menuitems");
         for (final DashboardViewType view : DashboardViewType.values()) {
             Component menuItemComponent = new ValoMenuItemButton(view);
