@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.google.common.eventbus.Subscribe;
 import com.vaadin.data.Container;
@@ -180,7 +181,7 @@ public final class PracticeView extends VerticalLayout implements View,
 		menu.setSelectable(true);
 		menu.setDragMode(TreeDragMode.NODE);
 		menu.setSizeFull();
-		menu.addItemClickListener(this);
+//		menu.addItemClickListener(this);
 		menu.addItemClickListener(new ItemClickListener() {
 			@Override
 			public void itemClick(ItemClickEvent event) {
@@ -235,43 +236,46 @@ public final class PracticeView extends VerticalLayout implements View,
 	}
 
 	IndexedContainer c = new IndexedContainer();
-
+	private static final String PRACTICE_MATERIAL_NAME = "name";
+	private static final String PRACTICE_MATERIAL_URL = "url";
+	private static final String PRACTICE_MATERIAL_TYPE= "type";
+	private static final String PRACTICE_MATERIAL_ICON = "icon";
 	@SuppressWarnings("unchecked")
 	private Container itemContainer() {
 		c.removeAllItems();
-		c.addContainerProperty("name", String.class, null);
-		c.addContainerProperty("url", String.class, null);
-		c.addContainerProperty("type", MusicMediaType.class, null);
-		c.addContainerProperty("icon", FontAwesome.class, null);
+		c.addContainerProperty(PRACTICE_MATERIAL_NAME, String.class, null);
+		c.addContainerProperty(PRACTICE_MATERIAL_URL, String.class, null);
+		c.addContainerProperty(PRACTICE_MATERIAL_TYPE, MusicMediaType.class, null);
+		c.addContainerProperty(PRACTICE_MATERIAL_ICON, FontAwesome.class, null);
 		int id = 0;
 		if (selectedPracticeItem != null) {
 			for (MusicMedia m : selectedPracticeItem.getMaterials()) {
 				Item item = c.addItem(id);
-				item.getItemProperty("name").setValue(m.getName());
-				item.getItemProperty("url").setValue(m.getUrl());
-				item.getItemProperty("type").setValue(m.getType());
+				item.getItemProperty(PRACTICE_MATERIAL_NAME).setValue(m.getName());
+				item.getItemProperty(PRACTICE_MATERIAL_URL).setValue(m.getUrl());
+				item.getItemProperty(PRACTICE_MATERIAL_TYPE).setValue(m.getType());
 				switch (m.getType()) {
 				case AUDIO:
-					item.getItemProperty("icon").setValue(
+					item.getItemProperty(PRACTICE_MATERIAL_ICON).setValue(
 							FontAwesome.SOUNDCLOUD);
 					break;
 				case VIDEO:
-					item.getItemProperty("icon").setValue(
+					item.getItemProperty(PRACTICE_MATERIAL_ICON).setValue(
 							FontAwesome.VIDEO_CAMERA);
 					break;
 				case DOCUMENT:
-					item.getItemProperty("icon").setValue(FontAwesome.BOOK);
+					item.getItemProperty(PRACTICE_MATERIAL_ICON).setValue(FontAwesome.BOOK);
 					break;
 
 				case PICTURE:
-					item.getItemProperty("icon")
+					item.getItemProperty(PRACTICE_MATERIAL_ICON)
 							.setValue(FontAwesome.PICTURE_O);
 					break;
 				case HTMLLINK:
-					item.getItemProperty("icon").setValue(FontAwesome.HTML5);
+					item.getItemProperty(PRACTICE_MATERIAL_ICON).setValue(FontAwesome.HTML5);
 					break;
 				default:
-					item.getItemProperty("icon").setValue(
+					item.getItemProperty(PRACTICE_MATERIAL_ICON).setValue(
 							FontAwesome.QUESTION_CIRCLE);
 					break;
 				}
@@ -294,19 +298,24 @@ public final class PracticeView extends VerticalLayout implements View,
 
 			@Override
 			public void containerItemSetChange(ItemSetChangeEvent event) {
-				// TODO Auto-generated method stub
-				options.setItemCaptionPropertyId("name");
-				options.setItemIconPropertyId("icon");
-				options.setContainerDataSource(c);
+				options.setItemCaptionPropertyId(PRACTICE_MATERIAL_NAME);
+				options.setItemIconPropertyId(PRACTICE_MATERIAL_ICON);
 			}
 
 		});
+		
 
 		select.addComponent(options);
+		
 		Button button = new Button("Open Window", new ClickListener() {
 			@Override
 			public void buttonClick(final ClickEvent event) {
-				Window win = showPracticeMaterial();
+				Set<?> selectedIds = (Set<?>) options.getValue();
+				ArrayList<Item> selectedItems = new ArrayList<Item>();
+                for (Object itemId : selectedIds) {
+                		selectedItems.add((Item)c.getItem(itemId));      
+                }
+				Window win = showPracticeMaterial(selectedItems);
 				getUI().addWindow(win);
 				win.center();
 				win.focus();
@@ -319,13 +328,10 @@ public final class PracticeView extends VerticalLayout implements View,
 		return select;
 	}
 
-	private Window showPracticeMaterial() {
-		final Window win = new Window("Practice: "
-				+ selectedPracticeItem.getName());
+	private Window showPracticeMaterial(ArrayList<Item> selectedItems) {
+		Window win = new Window("Practice: " + selectedPracticeItem.getName());
 		setSpacing(true);
 		setMargin(true);
-		// win.setWidth("380px");
-		// win.setHeightUndefined();
 		win.setClosable(true);
 		win.setResizable(true);
 		win.setModal(true);
@@ -350,18 +356,16 @@ public final class PracticeView extends VerticalLayout implements View,
 			}
 
 		});
-		win.setContent(windowContentPanel());
-
+	    win.setContent(windowContentPanel(selectedItems));
 		return win;
 	}
 
-	private Component windowContentPanel() {
+	private Component windowContentPanel(ArrayList<Item> selectedItems) {
 		HorizontalLayout root = new HorizontalLayout();
 		VerticalLayout lefttop = new VerticalLayout();
 		VerticalLayout leftbottom = new VerticalLayout();
 		VerticalLayout right = new VerticalLayout();
 		VerticalLayout left = new VerticalLayout();
-
 
 		Panel videoPanel = new Panel("Video");
 		videoPanel.addStyleName("color2");
@@ -403,55 +407,58 @@ public final class PracticeView extends VerticalLayout implements View,
 		return root;
 	}
 
-	private Component windowContentSubWindow() {
+	private Window windowContentSubWindow(Window main) {
 		HorizontalLayout root = new HorizontalLayout();
 		VerticalLayout lefttop = new VerticalLayout();
 		VerticalLayout leftbottom = new VerticalLayout();
 		VerticalLayout right = new VerticalLayout();
 		VerticalLayout left = new VerticalLayout();
 
-
 		Window videoPanel = new Window("Video");
 		videoPanel.addStyleName("color2");
 		videoPanel.setContent(loadVideo());
 		videoPanel.setSizeFull();
 		videoPanel.setResponsive(true);
-
+		UI.getCurrent().addWindow(videoPanel);
+		
 		Window audioPanel = new Window("Audio");
 		audioPanel.addStyleName("color2");
 		audioPanel.setContent(loadAudio());
 		audioPanel.setResponsive(true);
 		audioPanel.setSizeFull();
+		UI.getCurrent().addWindow(audioPanel);
 
 		Window docPanel = new Window("Score");
 		docPanel.addStyleName("color2");
 		docPanel.setContent(loadDocument());
 		docPanel.setSizeFull();
 		docPanel.setResponsive(true);
+		UI.getCurrent().addWindow(docPanel);
 
 		Window notePanel = new Window("Notes");
 		notePanel.addStyleName("color2");
 		notePanel.setContent(loadNotes());
 		notePanel.setResponsive(true);
 		notePanel.setSizeFull();
+		UI.getCurrent().addWindow(notePanel);
 
 		lefttop.setSizeFull();
 		leftbottom.setSizeFull();
 		left.setSizeFull();
 		right.setSizeFull();
-		lefttop.addComponent(videoPanel);
-		leftbottom.addComponent(audioPanel);
-		leftbottom.addComponent(notePanel);
-		left.addComponent(lefttop);
-		left.addComponent(leftbottom);
-		right.addComponent(docPanel);
-		root.addComponent(left);
-		root.addComponent(right);
-		root.setSizeFull();
-		return root;
+//		lefttop.setContent(videoPanel);
+//		leftbottom.addComponent(audioPanel);
+//		leftbottom.addComponent(notePanel);
+//		left.addComponent(lefttop);
+//		left.addComponent(leftbottom);
+//		right.addComponent(docPanel);
+//		root.addComponent(left);
+//		root.addComponent(right);
+//		root.setSizeFull();
+//		main.setContent(root);
+		return main;
 	}
 
-	
 	private Component loadDocument() {
 		final VerticalLayout pdf = new VerticalLayout();
 		pdf.setMargin(true);
@@ -465,7 +472,6 @@ public final class PracticeView extends VerticalLayout implements View,
 		e.setSizeFull();
 		pdf.addComponent(e);
 		pdf.setSizeFull();
-		// addComponent(e);
 		return pdf;
 	}
 
